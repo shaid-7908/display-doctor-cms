@@ -22,7 +22,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
             statusCode: exceptionStatus,
             message: exception?.message || exception,
             stack: this.configService.get('NODE_ENV') == 'local' ? exception.stack : null
-        }
+        };
 
         switch (exceptionStatus) {
             case HttpStatus.BAD_REQUEST:

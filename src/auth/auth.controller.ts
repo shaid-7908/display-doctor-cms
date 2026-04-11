@@ -8,7 +8,7 @@ import { ForgotPasswordDTO, ResetPasswordDTO, UserSignInDTO, UserSignupDTO } fro
 import { SingleFileInterceptor } from '@common/interceptors/files.interceptor';
 import { Request } from 'express';
 import { LoginUser } from '@common/decorator/login-user.decorator';
-import { ApiGroup } from '@common/decorator/api-group.decorator';
+//import { ApiGroup } from '@common/decorator/api-group.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')

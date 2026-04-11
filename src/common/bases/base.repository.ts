@@ -1,5 +1,5 @@
 import { FilterQuery, Model, ProjectionFields, Types, UpdateQuery } from 'mongoose';
-import mongodb from 'mongodb';
+//import mongodb from 'mongodb';
 
 export class BaseRepository<T> {
     private readonly model: Model<T>;

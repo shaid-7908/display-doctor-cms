@@ -21,8 +21,8 @@ export function patchSwaggerDoc(app: INestApplication, document: OpenAPIObject, 
         }
     }
 
-    for (const [_p, _pI] of Object.entries(document.paths)) {
-        for (const [_m, _o] of Object.entries(_pI as any)) {
+    for (const [, _pI] of Object.entries(document.paths)) {
+        for (const [, _o] of Object.entries(_pI as any)) {
             if (_o && typeof _o === 'object' && 'operationId' in _o) {
                 const operationId = (_o as any).operationId;
                 if (operationId) {

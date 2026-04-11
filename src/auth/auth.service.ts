@@ -210,6 +210,7 @@ export class AuthService {
         const { accessToken, refreshToken } = await this.generateTokenPair(checkIfExists._id, deviceId);
         if (deviceId) {
             const [err, _data] = await safeAsync(this.userDeviceRepository.updateById({ accessToken }, deviceId));
+            console.log(_data);
             if (err) {
                 const st = (err as Error)?.stack?.split('\n')?.reverse()?.slice(0, -2)?.reverse()?.join('\n');
                 this.winston.error(st, 'userLoginService');

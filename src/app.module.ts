@@ -35,7 +35,7 @@ import { DiscoveryModule } from '@nestjs/core';
         CmsModule,
         CmsRepositoryModule,
         RoleRepositoryModule,
-        DiscoveryModule,
+        DiscoveryModule
     ],
     providers: []
 })

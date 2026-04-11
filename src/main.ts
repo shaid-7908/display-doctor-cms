@@ -25,9 +25,11 @@ async function bootstrap() {
         credentials: true
     });
     app.use(compression());
-    app.use(helmet({
-        crossOriginResourcePolicy: false
-    }));
+    app.use(
+        helmet({
+            crossOriginResourcePolicy: false
+        })
+    );
 
     app.setGlobalPrefix('/api');
     app.enableVersioning();
@@ -37,6 +39,7 @@ async function bootstrap() {
 
     app.useStaticAssets(resolve('./public'));
     app.setBaseViewsDir(resolve('./views'));
+    app.setViewEngine('ejs');
 
     let groups: Map<string, any> = new Map();
     const enableSwaggerDoc = configService.getOrThrow('NODE_ENV') === 'development';
@@ -51,7 +54,7 @@ async function bootstrap() {
             .build();
 
         const doc = SwaggerModule.createDocument(app, config);
-        let { sggrGroups, defaultDoc } = patchSwaggerDoc(app, doc, enableSwaggerPatch);
+        const { sggrGroups, defaultDoc } = patchSwaggerDoc(app, doc, enableSwaggerPatch);
         SwaggerModule.setup('apidoc', app, defaultDoc);
         sggrGroups.forEach((groupDoc, groupName) => {
             const endpoint = `apidoc/${groupName.toLowerCase()}`;
@@ -61,7 +64,7 @@ async function bootstrap() {
     }
 
     await app.listen(configService.getOrThrow('PORT'), () => {
-        const isPrimaryInstance = (process.env.NODE_APP_INSTANCE == '0' || process.env.NODE_APP_INSTANCE === undefined);
+        const isPrimaryInstance = process.env.NODE_APP_INSTANCE == '0' || process.env.NODE_APP_INSTANCE === undefined;
         if (isPrimaryInstance) {
             logger.debug(`[BOOT] Base URL          : http://127.0.0.1:${configService.get('PORT')}`);
             logger.debug(`[BOOT] Node Version      : ${process.version}`);
@@ -70,18 +73,22 @@ async function bootstrap() {
                 const gitBranch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
                 logger.debug(`[BOOT] Git Branch        : ${gitBranch}`);
             } catch (error) {
-                logger.debug(`[BOOT] Git Branch        : n/a`);
+                logger.debug(`[BOOT] Git Branch        : n/a ${error}`);
             }
 
             if (enableSwaggerDoc) {
                 logger.debug(`[BOOT] Swagger Doc       : http://127.0.0.1:${configService.get('PORT')}/apidoc`);
                 groups.forEach((_gD: string, _gN: string) => {
                     const endpoint = `apidoc/${_gN.toLowerCase()}`;
-                    logger.debug(`[BOOT] Swagger Doc ${_gN.padEnd(6)}: http://127.0.0.1:${configService.get('PORT')}/${endpoint}`);
+                    logger.debug(
+                        `[BOOT] Swagger Doc ${_gN.padEnd(6)}: http://127.0.0.1:${configService.get('PORT')}/${endpoint}`
+                    );
                 });
             }
         }
-        logger.debug(`[BOOT] PM2 Instance      : ${process.env.NODE_APP_INSTANCE !== undefined ? process.env.NODE_APP_INSTANCE : 'n/a'}`);
+        logger.debug(
+            `[BOOT] PM2 Instance      : ${process.env.NODE_APP_INSTANCE !== undefined ? process.env.NODE_APP_INSTANCE : 'n/a'}`
+        );
     });
 }
 
