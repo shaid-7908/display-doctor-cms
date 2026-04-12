@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { CmsController } from './cms.controller';
 import { CmsService } from './cms.service';
+import { CmsEjsController } from './cms.ejs.controller';
 
 @Module({
     imports: [],
-    controllers: [CmsController],
+    controllers: [CmsController,CmsEjsController],
     providers: [CmsService],
     exports: [CmsService]
 })

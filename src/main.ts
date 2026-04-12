@@ -31,7 +31,9 @@ async function bootstrap() {
         })
     );
 
-    app.setGlobalPrefix('/api');
+    app.setGlobalPrefix('/api', {
+        exclude: ['/', 'login', 'cms/(.*)']
+    });
     app.enableVersioning();
     app.useGlobalPipes(new ApiValidationPipe());
     app.useGlobalInterceptors(new ResponseInterceptor());
