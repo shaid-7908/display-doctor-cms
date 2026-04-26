@@ -1,11 +1,11 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
+                    <i class="fas fa-stethoscope"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3"><%= projectName || 'Display Doctor' %></div>
             </a>
 
             <!-- Divider -->
@@ -17,6 +17,60 @@
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
+
+                        <!-- Heading -->
+                        <div class="sidebar-heading">
+                            User Management
+                        </div>
+                        
+                        <!-- Nav Item - User Management Collapse Menu -->
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUserManagement"
+                                aria-expanded="true" aria-controls="collapseUserManagement">
+                                <i class="fas fa-fw fa-users-cog"></i>
+                                <span>User Management</span>
+                            </a>
+                            <div id="collapseUserManagement" class="collapse" aria-labelledby="headingUserManagement"
+                                data-parent="#accordionSidebar">
+                                <div class="bg-white py-2 collapse-inner rounded">
+                                    <h6 class="collapse-header">Manage Users:</h6>
+                                    <a class="collapse-item" href="/cms/technicians">
+                                        <i class="fas fa-tools mr-2 text-primary"></i>Technician Management
+                                    </a>
+                                    <a class="collapse-item" href="/cms/callers">
+                                        <i class="fas fa-headset mr-2 text-info"></i>Caller Management
+                                    </a>
+                                    <a class="collapse-item" href="/cms/admins">
+                                        <i class="fas fa-user-shield mr-2 text-danger"></i>Admin Management
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+
+                        <!-- Heading -->
+                        <div class="sidebar-heading">
+                            Role Management
+                        </div>
+
+                        <!-- Nav Item - Role Management Collapse Menu -->
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRoleManagement"
+                                aria-expanded="true" aria-controls="collapseRoleManagement">
+                                <i class="fas fa-fw fa-user-tag"></i>
+                                <span>Role Management</span>
+                            </a>
+                            <div id="collapseRoleManagement" class="collapse" aria-labelledby="headingRoleManagement" data-parent="#accordionSidebar">
+                                <div class="bg-white py-2 collapse-inner rounded">
+                                    <h6 class="collapse-header">Manage Roles:</h6>
+                                    <a class="collapse-item" href="/cms/roles">
+                                        <i class="fas fa-user-shield mr-2 text-primary"></i>Roles
+                                    </a>
+                                    <a class="collapse-item" href="/cms/permissions">
+                                        <i class="fas fa-key mr-2 text-warning"></i>Permissions
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -105,6 +159,11 @@
             </li>
 
             <!-- Divider -->
+            <hr class="sidebar-divider">
+
+
+
+            <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
             <!-- Sidebar Toggler (Sidebar) -->
@@ -114,7 +173,7 @@
 
             <!-- Sidebar Message -->
             <div class="sidebar-card d-none d-lg-flex">
-                <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
+                <img class="sidebar-card-illustration mb-2" src="/img/undraw_rocket.svg" alt="...">
                 <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components, and more!</p>
                 <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to Pro!</a>
             </div>

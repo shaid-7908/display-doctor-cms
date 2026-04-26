@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Dashboard - <%=title %></title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <%- include('common/sidebar') %>
+            <!-- End of Sidebar -->
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <!-- Main Content -->
+                <div id="content">
+
+                    <!-- Topbar -->
+                    <%- include('common/topbar') %>
+                        <!-- End of Topbar -->
+
+                        <!-- Begin Page Content -->
+                        <div class="container-fluid">
+
+                            <!-- Page Heading -->
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <h1 class="h3 mb-0 text-gray-800"><%= pageName %></h1>
+                            </div>
+
+                            <!-- Content Row -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card shadow mb-4">
+                                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                            <h6 class="m-0 font-weight-bold text-primary">Role List</h6>
+                                            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#addRoleModal">
+                                                <i class="fas fa-plus fa-sm"></i> Add Role
+                                            </button>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered" id="roleTable" width="100%" cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Display Name</th>
+                                                            <th>Group</th>
+                                                            <th>Status</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="roleTableBody">
+                                                        <tr>
+                                                            <td colspan="5" class="text-center">Loading roles...</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- /.container-fluid -->
+
+                </div>
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Your Website 2021</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+
+            </div>
+            <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Add Role Modal -->
+    <div class="modal fade" id="addRoleModal" tabindex="-1" role="dialog" aria-labelledby="addRoleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRoleModalLabel">Add New Role</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form id="addRoleForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="role">Role Name (Internal)</label>
+                            <input type="text" class="form-control" id="role" name="role" placeholder="e.g. manager" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="roleDisplayName">Role Display Name</label>
+                            <input type="text" class="form-control" id="roleDisplayName" name="roleDisplayName" placeholder="e.g. Manager" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="roleGroup">Role Group</label>
+                            <select class="form-control" id="roleGroup" name="roleGroup" required>
+                                <option value="backend">Backend</option>
+                                <option value="frontend">Frontend</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary" type="submit">Save Role</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Role Modal -->
+    <div class="modal fade" id="editRoleModal" tabindex="-1" role="dialog" aria-labelledby="editRoleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editRoleModalLabel">Edit Role</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form id="editRoleForm">
+                    <input type="hidden" id="edit_role_id" name="id">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="edit_role">Role Name (Internal)</label>
+                            <input type="text" class="form-control" id="edit_role" name="role" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_roleDisplayName">Role Display Name</label>
+                            <input type="text" class="form-control" id="edit_roleDisplayName" name="roleDisplayName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_roleGroup">Role Group</label>
+                            <select class="form-control" id="edit_roleGroup" name="roleGroup" required>
+                                <option value="backend">Backend</option>
+                                <option value="frontend">Frontend</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary" type="submit">Update Role</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="/js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="/vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="/js/demo/chart-area-demo.js"></script>
+    <script src="/js/demo/chart-pie-demo.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            loadRoles();
+
+            function loadRoles() {
+                $.ajax({
+                    url: '/v1/admin/role/getall',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        page: 1,
+                        limit: 100
+                    }),
+                    success: function(response) {
+                        if (response.statusCode === 200) {
+                            const roles = response.data.docs || [];
+                            let html = '';
+                            if (roles.length > 0) {
+                                roles.forEach(role => {
+                                    html += `
+                                        <tr>
+                                            <td>${role.role}</td>
+                                            <td>${role.roleDisplayName}</td>
+                                            <td>${role.roleGroup}</td>
+                                            <td>
+                                                <span class="badge badge-${role.status === 'Active' ? 'success' : 'danger'}">
+                                                    ${role.status}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info edit-role" data-id="${role._id}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger delete-role" data-id="${role._id}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                });
+                            } else {
+                                html = '<tr><td colspan="5" class="text-center">No roles found</td></tr>';
+                            }
+                            $('#roleTableBody').html(html);
+                        } else {
+                            $('#roleTableBody').html(`<tr><td colspan="5" class="text-center text-danger">${response.message || 'Error loading roles'}</td></tr>`);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('AJAX Error:', xhr);
+                        $('#roleTableBody').html('<tr><td colspan="5" class="text-center text-danger">Failed to fetch data from server</td></tr>');
+                    }
+                });
+            }
+
+            // Edit Role - Open Modal and Load Data
+            $(document).on('click', '.edit-role', function() {
+                const id = $(this).data('id');
+                $.ajax({
+                    url: `/v1/admin/role/${id}`,
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.statusCode === 200) {
+                            const role = response.data;
+                            $('#edit_role_id').val(role._id);
+                            $('#edit_role').val(role.role);
+                            $('#edit_roleDisplayName').val(role.roleDisplayName);
+                            $('#edit_roleGroup').val(role.roleGroup);
+                            $('#editRoleModal').modal('show');
+                        } else {
+                            alert('Error fetching role details');
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Failed to fetch role data');
+                    }
+                });
+            });
+
+            // Edit Role - Form Submission
+            $('#editRoleForm').on('submit', function(e) {
+                e.preventDefault();
+                const id = $('#edit_role_id').val();
+                const formData = {
+                    role: $('#edit_role').val(),
+                    roleDisplayName: $('#edit_roleDisplayName').val(),
+                    roleGroup: $('#edit_roleGroup').val()
+                };
+
+                $.ajax({
+                    url: `/v1/admin/role/${id}`,
+                    type: 'PATCH',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        if (response.statusCode === 200) {
+                            alert('Role updated successfully!');
+                            $('#editRoleModal').modal('hide');
+                            loadRoles();
+                        } else {
+                            alert('Error: ' + (response.message || 'Update failed'));
+                        }
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'Failed to update role';
+                        alert('Error: ' + errorMsg);
+                    }
+                });
+            });
+
+            // Add Role Form Submission
+            $('#addRoleForm').on('submit', function(e) {
+                e.preventDefault();
+                const formData = {
+                    role: $('#role').val(),
+                    roleDisplayName: $('#roleDisplayName').val(),
+                    roleGroup: $('#roleGroup').val()
+                };
+
+                $.ajax({
+                    url: '/v1/admin/role',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        if (response.statusCode === 201 || response.statusCode === 200) {
+                            alert('Role added successfully!');
+                            $('#addRoleModal').modal('hide');
+                            $('#addRoleForm')[0].reset();
+                            loadRoles(); // Refresh the table
+                        } else {
+                            alert('Error: ' + (response.message || 'Something went wrong'));
+                        }
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'Failed to save role';
+                        alert('Error: ' + errorMsg);
+                        console.error('Save Error:', xhr);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

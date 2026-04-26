@@ -1,18 +1,18 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty,  IsString } from "class-validator";
+import { ApiPropertyOptional } from "@nestjs/swagger";
+import { IsOptional, IsString } from "class-validator";
 
 export class RefreshJwtDto {
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
-    @ApiProperty({ description: 'Refresh token to get new access token' })
-    refreshToken: string;
+    @ApiPropertyOptional({ description: 'Refresh token to get new access token (cookie preferred)' })
+    refreshToken?: string;
 }
 
 export class LogoutDto {
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
-    @ApiProperty({ description: 'Refresh token to revoke' })
-    refreshToken: string;
+    @ApiPropertyOptional({ description: 'Refresh token to revoke (cookie preferred)' })
+    refreshToken?: string;
 }
 
- 
+

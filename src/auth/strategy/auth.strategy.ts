@@ -8,6 +8,16 @@ import { UserRepository } from '@modules/users/repositories/user.repository';
 import { RefreshTokenRepository } from '@modules/refresh-token/repository/refresh-token.repository';
 import { JwtPayloadType } from '@common/types/jwt.type';
 
+/**
+ * Extracts JWT from the `access_token` httpOnly cookie.
+ * Falls back to the Authorization Bearer header so API/Swagger clients keep working.
+ */
+function cookieOrBearerExtractor(req: Request): string | null {
+    const cookieToken: string | undefined = req?.cookies?.access_token;
+    if (cookieToken) return cookieToken;
+    return ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     constructor(
@@ -16,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         readonly configService: ConfigService
     ) {
         super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            jwtFromRequest: cookieOrBearerExtractor,
             secretOrKey: configService.getOrThrow<string>('JWT_SECRET'),
             passReqToCallback: true
         });

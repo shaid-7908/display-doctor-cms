@@ -1,5 +1,5 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { WinstonLoggerService } from '@common/logger/winston.logger';
 
@@ -16,7 +16,22 @@ export class CustomExceptionFilter implements ExceptionFilter {
     catch(exception: HttpException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
+        const request = ctx.getRequest<Request>();
         const exceptionStatus = (exception.getStatus && exception.getStatus()) || HttpStatus.INTERNAL_SERVER_ERROR;
+
+        // ── Redirect browser (EJS) requests to /login on 401 ──────────────
+        // A request is a "browser page" request when:
+        //   • The status is 401 (Unauthorized / guard failed)
+        //   • The URL does NOT start with /api (REST API prefix)
+        //   • The Accept header prefers text/html (normal browser navigation)
+        if (
+            exceptionStatus === HttpStatus.UNAUTHORIZED &&
+            !request.url?.startsWith('/api') &&
+            (request.headers?.accept as string)?.includes('text/html')
+        ) {
+            return response.redirect('/login');
+        }
+        // ───────────────────────────────────────────────────────────────────
 
         const data: any = {
             statusCode: exceptionStatus,

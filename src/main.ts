@@ -4,6 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import { resolve } from 'path';
 
 import { AppModule } from './app.module';
@@ -24,16 +25,24 @@ async function bootstrap() {
         methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
         credentials: true
     });
+    app.use(cookieParser());
     app.use(compression());
     app.use(
         helmet({
-            crossOriginResourcePolicy: false
+            crossOriginResourcePolicy: false,
+            contentSecurityPolicy: {
+                directives: {
+                    defaultSrc: ["'self'"],
+                    scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://code.jquery.com"],
+                    styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
+                    fontSrc: ["'self'", "https://fonts.gstatic.com"],
+                    imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://source.unsplash.com"],
+                },
+            },
         })
     );
 
-    app.setGlobalPrefix('/api', {
-        exclude: ['/', 'login', 'cms/(.*)']
-    });
+    
     app.enableVersioning();
     app.useGlobalPipes(new ApiValidationPipe());
     app.useGlobalInterceptors(new ResponseInterceptor());
