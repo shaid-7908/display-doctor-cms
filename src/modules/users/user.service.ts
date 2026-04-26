@@ -17,12 +17,13 @@ export class UserService {
 
 
     async getAllUsers(body: ListingUserDto): Promise<ApiResponse> {
-        const superAdminDetails = await this.roleRepository.getByField({ 'role': 'admin', isDeleted: false });
-        body['role'] = superAdminDetails._id;
+        // const superAdminDetails = await this.roleRepository.getByField({ 'role': 'admin', isDeleted: false });
+        //body['role'] = superAdminDetails._id;
 
         const getAllUsers = await this.userRepository.getAllPaginateAdmin(body);
         return { message: 'User data fetched successfully.', data: getAllUsers };
     }
+    
 
 
     async profileDetails(user: Partial<UserDocument>): Promise<ApiResponse> {

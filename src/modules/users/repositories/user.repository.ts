@@ -112,7 +112,7 @@ export class UserRepository extends BaseRepository<UserDocument> {
         const page = paginatedDto.page || 1;
         const limit = paginatedDto.limit || 10;
         const skip = (page - 1) * limit;
-        and_clauses.push({ isDeleted: false, role: { $eq: paginatedDto.role } });
+        and_clauses.push({ isDeleted: false, role: new Types.ObjectId(paginatedDto.role) });
         if (paginatedDto.search) {
             const searchRegex = new RegExp(paginatedDto.search, 'i');
             and_clauses.push({

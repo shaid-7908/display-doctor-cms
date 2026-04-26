@@ -6,10 +6,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
+    <meta name="description" content="Technician Management">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>Display Doctor CMS - Technician Management</title>
 
     <!-- Custom fonts for this template-->
     <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -19,6 +19,35 @@
 
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+
+    <style>
+        #techniciansTable thead th {
+            background-color: #4e73df;
+            color: #fff;
+            border-color: #4e73df;
+        }
+
+        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: 4px;
+            border: 1px solid #d1d3e2;
+            padding: 4px 8px;
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        .action-btn {
+            margin: 0 2px;
+        }
+    </style>
 
 </head>
 
@@ -46,99 +75,42 @@
 
                             <!-- Page Heading -->
                             <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                                <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                        class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                                <h1 class="h3 mb-0 text-gray-800">
+                                    <i class="fas fa-tools mr-2 text-primary"></i>Technician Management
+                                </h1>
                             </div>
 
-                            <!-- Content Row -->
-                            <div class="row">
-
-                                <!-- Earnings (Monthly) Card Example -->
-                                <div class="col-xl-3 col-md-6 mb-4">
-                                    <div class="card border-left-primary shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div
-                                                        class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                        Earnings (Monthly)</div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                        </div>
+                            <!-- DataTable Card -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">All Technicians</h6>
+                                    <div class="d-flex align-items-center">
+                                        <select id="statusFilter" class="form-control form-control-sm mr-2"
+                                            style="width:140px;">
+                                            <option value="">All Statuses</option>
+                                            <option value="Active">Active</option>
+                                            <option value="Inactive">Inactive</option>
+                                        </select>
+                                        <button class="btn btn-sm btn-success" id="addTechnicianBtn">
+                                            <i class="fas fa-plus fa-sm mr-1"></i> Add Technician
+                                        </button>
                                     </div>
                                 </div>
-
-                                <!-- Earnings (Monthly) Card Example -->
-                                <div class="col-xl-3 col-md-6 mb-4">
-                                    <div class="card border-left-success shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div
-                                                        class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                        Earnings (Annual)</div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Earnings (Monthly) Card Example -->
-                                <div class="col-xl-3 col-md-6 mb-4">
-                                    <div class="card border-left-info shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                        Tasks
-                                                    </div>
-                                                    <div class="row no-gutters align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%
-                                                            </div>
-                                                        </div>
-                                                        <div class="col">
-                                                            <div class="progress progress-sm mr-2">
-                                                                <div class="progress-bar bg-info" role="progressbar"
-                                                                    style="width: 50%" aria-valuenow="50"
-                                                                    aria-valuemin="0" aria-valuemax="100"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Pending Requests Card Example -->
-                                <div class="col-xl-3 col-md-6 mb-4">
-                                    <div class="card border-left-warning shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div
-                                                        class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                        Pending Requests</div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-comments fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="techniciansTable" class="table table-bordered table-hover w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Full Name</th>
+                                                    <th>Username</th>
+                                                    <th>Email</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +125,7 @@
                 <footer class="sticky-footer bg-white">
                     <div class="container my-auto">
                         <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2021</span>
+                            <span>Copyright &copy; Display Doctor <%= new Date().getFullYear() %></span>
                         </div>
                     </div>
                 </footer>
@@ -170,25 +142,67 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <!-- Add Technician Modal -->
+    <div class="modal fade" id="addTechnicianModal" tabindex="-1" role="dialog" aria-labelledby="addTechnicianModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <h5 class="modal-title" id="addTechnicianModalLabel">
+                        <i class="fas fa-tools mr-2 text-primary"></i>Add New Technician
+                    </h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
+                <form id="addTechnicianForm" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="tech_fullName">Full Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="tech_fullName" name="fullName" placeholder="Enter full name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="tech_userName">Username <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="tech_userName" name="userName" placeholder="Enter username" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="tech_email">Email Address <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="tech_email" name="email" placeholder="Enter email" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="tech_profileImage">Profile Image</label>
+                                    <input type="file" class="form-control-file" id="tech_profileImage" name="profileImage" accept="image/jpg,image/jpeg,image/png">
+                                    <small class="form-text text-muted">Accepted: JPG, JPEG, PNG</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info py-2 mb-0">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Default password <strong>12345678</strong> will be set for the new technician.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary" type="submit" id="saveTechnicianBtn">
+                            <span id="saveTechnicianSpinner" class="spinner-border spinner-border-sm d-none mr-1" role="status"></span>
+                            Save Technician
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+
+    
 
     <!-- Bootstrap core JavaScript-->
     <script src="/vendor/jquery/jquery.min.js"></script>
@@ -200,12 +214,203 @@
     <!-- Custom scripts for all pages-->
     <script src="/js/sb-admin-2.min.js"></script>
 
-    <!-- Page level plugins -->
-    <script src="/vendor/chart.js/Chart.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="/js/demo/chart-area-demo.js"></script>
-    <script src="/js/demo/chart-pie-demo.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            let currentStatus = '';
+            let technicianRoleId = null;
+            let table = null;
+
+            // Fetch roles first, then initialize DataTable
+            $.ajax({
+                url: '/v1/admin/role/getall',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ page: 1, limit: 100 }),
+                success: function (response) {
+                    if (response.statusCode === 200) {
+                        const roles = response.data.docs || [];
+                        const technicianRole = roles.find(r => r.role === 'Technician' || r.role === 'technician');
+                        technicianRoleId = technicianRole ? technicianRole._id : null;
+                    }
+                },
+                error: function () {
+                    console.warn('Could not fetch roles. Loading all users.');
+                },
+                complete: function () {
+                    // Always initialize the DataTable after role fetch completes (success or error)
+                    initTable();
+                }
+            });
+
+            function initTable() {
+                table = $('#techniciansTable').DataTable({
+                processing: true,
+                serverSide: true,
+                searching: true,
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                order: [[0, 'asc']],
+                language: {
+                    processing: '<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i></div>',
+                    emptyTable: 'No technicians found',
+                    zeroRecords: 'No matching technicians found'
+                },
+                ajax: function (dtParams, callback) {
+                    const page = Math.floor(dtParams.start / dtParams.length) + 1;
+                    const searchValue = dtParams.search.value || '';
+
+                    const payload = {
+                        page: page,
+                        limit: dtParams.length,
+                        // search: searchValue,
+                        // sortField: dtParams.order.length ? dtParams.columns[dtParams.order[0].column].data : '_id',
+                        // sortOrder: dtParams.order.length ? dtParams.order[0].dir : 'asc'
+                    };
+
+                    if (currentStatus) payload.status = currentStatus;
+                    if (technicianRoleId) payload.role = technicianRoleId;
+
+                    $.ajax({
+                        url: '/v1/admin/user/getall',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(payload),
+                        success: function (response) {
+                            if (response.statusCode === 200) {
+                                const data = response.data;
+                                callback({
+                                    draw: dtParams.draw,
+                                    recordsTotal: data.meta.totalDocs,
+                                    recordsFiltered: data.meta.totalDocs,
+                                    data: data.docs
+                                });
+                            } else {
+                                callback({ draw: dtParams.draw, recordsTotal: 0, recordsFiltered: 0, data: [] });
+                            }
+                        },
+                        error: function () {
+                            callback({ draw: dtParams.draw, recordsTotal: 0, recordsFiltered: 0, data: [] });
+                        }
+                    });
+                },
+                columns: [
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row, meta) {
+                            return meta.row + 1 + meta.settings._iDisplayStart;
+                        }
+                    },
+                    { data: 'fullName', defaultContent: '-' },
+                    { data: 'userName', defaultContent: '-' },
+                    { data: 'email', defaultContent: '-' },
+                    {
+                        data: 'status',
+                        orderable: false,
+                        render: function (data) {
+                            const cls = data === 'Active' ? 'badge-success' : 'badge-danger';
+                            return `<span class="badge ${cls}">${data || '-'}</span>`;
+                        }
+                    },
+                    {
+                        data: '_id',
+                        orderable: false,
+                        render: function (id) {
+                            return `
+                                <button class="btn btn-sm btn-info action-btn view-technician" data-id="${id}" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            `;
+                        }
+                    }
+                ]
+            });
+            }
+
+            // Status filter change
+            $('#statusFilter').on('change', function () {
+                currentStatus = $(this).val();
+                table.ajax.reload();
+            });
+
+            // View technician details
+            $(document).on('click', '.view-technician', function () {
+                const id = $(this).data('id');
+                window.location.href = `/cms/technicians/${id}`;
+            });
+
+            // Open Add Technician modal
+            $('#addTechnicianBtn').on('click', function () {
+                if (!technicianRoleId) {
+                    alert('Technician role not found. Please ensure a "Technician" role exists in the system.');
+                    return;
+                }
+                $('#addTechnicianForm')[0].reset();
+                $('#addTechnicianModal').modal('show');
+            });
+
+            // Add Technician form submission
+            $('#addTechnicianForm').on('submit', function (e) {
+                e.preventDefault();
+
+                if (!technicianRoleId) {
+                    alert('Technician role ID is missing. Cannot create user.');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('fullName', $('#tech_fullName').val());
+                formData.append('userName', $('#tech_userName').val());
+                formData.append('email', $('#tech_email').val());
+                formData.append('password', '12345678');
+                formData.append('role', technicianRoleId);
+
+                const profileImageFile = $('#tech_profileImage')[0].files[0];
+                if (profileImageFile) {
+                    formData.append('profileImage', profileImageFile);
+                }
+
+                // Show loading state
+                $('#saveTechnicianBtn').prop('disabled', true);
+                $('#saveTechnicianSpinner').removeClass('d-none');
+
+                $.ajax({
+                    url: '/v1/admin/user',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.statusCode === 200 || response.statusCode === 201) {
+                            alert('Technician added successfully!');
+                            $('#addTechnicianModal').modal('hide');
+                            $('#addTechnicianForm')[0].reset();
+                            table.ajax.reload();
+                        } else {
+                            alert('Error: ' + (response.message || 'Something went wrong'));
+                        }
+                    },
+                    error: function (xhr) {
+                        const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'Failed to save technician';
+                        alert('Error: ' + (Array.isArray(errorMsg) ? errorMsg.join(', ') : errorMsg));
+                        console.error('Save Error:', xhr);
+                    },
+                    complete: function () {
+                        $('#saveTechnicianBtn').prop('disabled', false);
+                        $('#saveTechnicianSpinner').addClass('d-none');
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 

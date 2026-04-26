@@ -143,17 +143,18 @@ export class AuthController {
 
     @Post('logout')
     @HttpCode(200)
-    @UseGuards(AuthGuard('jwt'))
-    @ApiBearerAuth()
     async logout(
         @Body() dto: LogoutDto,
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response
     ) {
         const refreshToken = (req.cookies?.[REFRESH_TOKEN_COOKIE] as string | undefined) ?? dto.refreshToken;
-        const result = await this.authService.logout(refreshToken);
+        if (refreshToken) {
+            // Best-effort: no error if token not found or already revoked
+            await this.authService.logout(refreshToken).catch(() => null);
+        }
         clearAuthCookies(res);
-        return result;
+        return { message: 'Logout successful' };
     }
 
     @Post('logout-all')

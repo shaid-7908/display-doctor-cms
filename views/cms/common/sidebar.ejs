@@ -17,7 +17,7 @@
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
-
+               <% if(user.role.role == 'admin') { %>
                         <!-- Heading -->
                         <div class="sidebar-heading">
                             User Management
@@ -71,7 +71,7 @@
                                 </div>
                             </div>
                         </li>
-
+            <%} %>
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -179,3 +179,64 @@
             </div>
 
         </ul>
+
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="logoutModalLabel">Ready to Leave?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary" id="confirmLogoutBtn">
+                            <span id="logoutSpinner" class="spinner-border spinner-border-sm d-none mr-1" role="status"></span>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shared Logout Script (included on every page via sidebar) -->
+        <script>
+            (function () {
+                // Wait for jQuery to be ready (scripts load after sidebar inclusion)
+                function bindLogout() {
+                    if (typeof $ === 'undefined') {
+                        setTimeout(bindLogout, 100);
+                        return;
+                    }
+
+                    $('#confirmLogoutBtn').on('click', function () {
+                        var $btn = $(this);
+                        var $spinner = $('#logoutSpinner');
+
+                        $btn.prop('disabled', true);
+                        $spinner.removeClass('d-none');
+
+                        $.ajax({
+                            url: '/auth/logout',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({}),   // refreshToken handled by httpOnly cookie
+                            success: function () {
+                                window.location.href = '/login';
+                            },
+                            error: function (xhr) {
+                                // Even on error (e.g. token already expired), redirect to login
+                                console.warn('Logout API error:', xhr.status, '- redirecting anyway');
+                                window.location.href = '/login';
+                            }
+                        });
+                    });
+                }
+
+                bindLogout();
+            })();
+        </script>
