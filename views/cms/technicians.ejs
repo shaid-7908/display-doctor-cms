@@ -179,6 +179,14 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label for="tech_phone">Phone Number <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="tech_phone" name="phone" placeholder="Enter phone number" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
                                     <label for="tech_profileImage">Profile Image</label>
                                     <input type="file" class="form-control-file" id="tech_profileImage" name="profileImage" accept="image/jpg,image/jpeg,image/png">
                                     <small class="form-text text-muted">Accepted: JPG, JPEG, PNG</small>
@@ -370,6 +378,7 @@
                 formData.append('fullName', $('#tech_fullName').val());
                 formData.append('userName', $('#tech_userName').val());
                 formData.append('email', $('#tech_email').val());
+                formData.append('phone', $('#tech_phone').val());
                 formData.append('password', '12345678');
                 formData.append('role', technicianRoleId);
 

@@ -158,6 +158,11 @@ export class SaveUserDTO {
     @IsNotEmpty({ message: 'User Role is required!' })
     role: Types.ObjectId | string;
 
+    @ApiProperty({ description: 'Phone number', required: true })
+    @Transform(({ value }: TransformFnParams) => value?.trim())
+    @IsNotEmpty({ message: 'Phone number is required!' })
+    phone: string;
+
     @ApiProperty({
         description: 'Profile image (jpg, png, jpeg)',
         type: 'string',

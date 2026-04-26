@@ -27,6 +27,9 @@ export class User {
     password: string;
 
     @Prop({ type: String, default: '' })
+    phone: string;
+
+    @Prop({ type: String, default: '' })
     profileImage: string;
 
     @Prop({ type: String, default: 'Active', enum: ['Active', 'Inactive'], index: true })
