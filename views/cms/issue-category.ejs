@@ -19,6 +19,18 @@
 
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+    
+    <style>
+        .problem-badge {
+            display: inline-block;
+            margin: 2px;
+            padding: 5px 10px;
+            background-color: #f8f9fc;
+            border: 1px solid #e3e6f0;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+    </style>
 
 </head>
 
@@ -47,102 +59,41 @@
                             <!-- Page Heading -->
                             <div class="d-sm-flex align-items-center justify-content-between mb-4">
                                 <h1 class="h3 mb-0 text-gray-800"><%= pageName %></h1>
-                                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                        class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                                <button class="btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#categoryModal" id="addCategoryBtn">
+                                    <i class="fas fa-plus fa-sm text-white-50"></i> Add Category
+                                </button>
                             </div>
 
                             <!-- Content Row -->
                             <div class="row">
-
-                                <!-- Earnings (Monthly) Card Example -->
-                                <div class="col-xl-3 col-md-6 mb-4">
-                                    <div class="card border-left-primary shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div
-                                                        class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                        Earnings (Monthly)</div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
+                                <div class="col-12">
+                                    <div class="card shadow mb-4">
+                                        <div class="card-header py-3">
+                                            <h6 class="m-0 font-weight-bold text-primary">Issue Categories</h6>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <!-- Earnings (Monthly) Card Example -->
-                                <div class="col-xl-3 col-md-6 mb-4">
-                                    <div class="card border-left-success shadow h-100 py-2">
                                         <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div
-                                                        class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                        Earnings (Annual)</div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Earnings (Monthly) Card Example -->
-                                <div class="col-xl-3 col-md-6 mb-4">
-                                    <div class="card border-left-info shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                        Tasks
-                                                    </div>
-                                                    <div class="row no-gutters align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%
-                                                            </div>
-                                                        </div>
-                                                        <div class="col">
-                                                            <div class="progress progress-sm mr-2">
-                                                                <div class="progress-bar bg-info" role="progressbar"
-                                                                    style="width: 50%" aria-valuenow="50"
-                                                                    aria-valuemin="0" aria-valuemax="100"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Pending Requests Card Example -->
-                                <div class="col-xl-3 col-md-6 mb-4">
-                                    <div class="card border-left-warning shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div
-                                                        class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                        Pending Requests</div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-comments fa-2x text-gray-300"></i>
-                                                </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered" id="categoryTable" width="100%" cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Description</th>
+                                                            <th>Problems</th>
+                                                            <th>Status</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="categoryTableBody">
+                                                        <tr>
+                                                            <td colspan="5" class="text-center">Loading...</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
 
                         </div>
                         <!-- /.container-fluid -->
@@ -154,7 +105,7 @@
                 <footer class="sticky-footer bg-white">
                     <div class="container my-auto">
                         <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2021</span>
+                            <span>Copyright &copy; Display Doctor 2024</span>
                         </div>
                     </div>
                 </footer>
@@ -171,6 +122,45 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
+    <!-- Category Modal (Add/Edit) -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="categoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryModalLabel">Add Category</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form id="categoryForm">
+                    <input type="hidden" id="category_id">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Category Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+                        </div>
+                        <hr>
+                        <h6>Problems</h6>
+                        <div id="problemContainer">
+                            <!-- Problems will be added here -->
+                        </div>
+                        <button type="button" class="btn btn-sm btn-info mt-2" id="addProblemRow">
+                            <i class="fas fa-plus"></i> Add Problem
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary" type="submit" id="saveCategoryBtn">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap core JavaScript-->
     <script src="/vendor/jquery/jquery.min.js"></script>
     <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -181,12 +171,192 @@
     <!-- Custom scripts for all pages-->
     <script src="/js/sb-admin-2.min.js"></script>
 
-    <!-- Page level plugins -->
-    <script src="/vendor/chart.js/Chart.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            let isEdit = false;
 
-    <!-- Page level custom scripts -->
-    <script src="/js/demo/chart-area-demo.js"></script>
-    <script src="/js/demo/chart-pie-demo.js"></script>
+            loadCategories();
+
+            // Load Categories
+            function loadCategories() {
+                $.ajax({
+                    url: '/v1/admin/issue-category/getall',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ page: 1, limit: 100 }),
+                    success: function(res) {
+                        const docs = res.data.docs || [];
+                        let html = '';
+                        if (docs.length > 0) {
+                            docs.forEach(cat => {
+                                const problems = cat.problem ? cat.problem.map(p => `<span class="problem-badge">${p.name}</span>`).join('') : '';
+                                const statusBadge = cat.status === 'Active' ? 'success' : 'secondary';
+                                
+                                html += `
+                                    <tr>
+                                        <td>${cat.name}</td>
+                                        <td>${cat.description || '-'}</td>
+                                        <td>${problems}</td>
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input status-toggle" id="status_${cat._id}" ${cat.status === 'Active' ? 'checked' : ''} data-id="${cat._id}">
+                                                <label class="custom-control-label" for="status_${cat._id}">${cat.status}</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info edit-btn" data-id="${cat._id}"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="${cat._id}"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            html = '<tr><td colspan="5" class="text-center">No categories found</td></tr>';
+                        }
+                        $('#categoryTableBody').html(html);
+                    },
+                    error: function(err) {
+                        console.error(err);
+                        $('#categoryTableBody').html('<tr><td colspan="5" class="text-center text-danger">Error loading data</td></tr>');
+                    }
+                });
+            }
+
+            // Add Problem Row
+            $('#addProblemRow').click(function() {
+                addProblemRow();
+            });
+
+            function addProblemRow(name = '', desc = '') {
+                const row = `
+                    <div class="row problem-row mb-2">
+                        <div class="col-5">
+                            <input type="text" class="form-control form-control-sm prob-name" placeholder="Problem Name" value="${name}" required>
+                        </div>
+                        <div class="col-5">
+                            <input type="text" class="form-control form-control-sm prob-desc" placeholder="Description" value="${desc}">
+                        </div>
+                        <div class="col-2">
+                            <button type="button" class="btn btn-sm btn-danger remove-prob"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                `;
+                $('#problemContainer').append(row);
+            }
+
+            // Remove Problem Row
+            $(document).on('click', '.remove-prob', function() {
+                $(this).closest('.problem-row').remove();
+            });
+
+            // Reset Modal on Open for Add
+            $('#addCategoryBtn').click(function() {
+                isEdit = false;
+                $('#category_id').val('');
+                $('#categoryForm')[0].reset();
+                $('#problemContainer').empty();
+                $('#categoryModalLabel').text('Add Category');
+                addProblemRow(); // Add one empty row by default
+            });
+
+            // Edit Button Click
+            $(document).on('click', '.edit-btn', function() {
+                const id = $(this).data('id');
+                isEdit = true;
+                $.get(`/v1/admin/issue-category/${id}`, function(res) {
+                    const cat = res.data;
+                    $('#category_id').val(cat._id);
+                    $('#name').val(cat.name);
+                    $('#description').val(cat.description);
+                    $('#problemContainer').empty();
+                    if (cat.problem && cat.problem.length > 0) {
+                        cat.problem.forEach(p => addProblemRow(p.name, p.description));
+                    } else {
+                        addProblemRow();
+                    }
+                    $('#categoryModalLabel').text('Edit Category');
+                    $('#categoryModal').modal('show');
+                });
+            });
+
+            // Form Submit
+            $('#categoryForm').submit(function(e) {
+                e.preventDefault();
+                const id = $('#category_id').val();
+                
+                const problems = [];
+                $('.problem-row').each(function() {
+                    const name = $(this).find('.prob-name').val();
+                    const desc = $(this).find('.prob-desc').val();
+                    if (name) {
+                        problems.push({ name, description: desc });
+                    }
+                });
+
+                const data = {
+                    name: $('#name').val(),
+                    description: $('#description').val(),
+                    problem: problems
+                };
+
+                const url = isEdit ? `/v1/admin/issue-category/${id}` : '/v1/admin/issue-category';
+                const method = isEdit ? 'PATCH' : 'POST';
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function(res) {
+                        $('#categoryModal').modal('hide');
+                        loadCategories();
+                        alert(res.message);
+                    },
+                    error: function(err) {
+                        alert(err.responseJSON.message || 'Something went wrong');
+                    }
+                });
+            });
+
+            // Status Toggle
+            $(document).on('change', '.status-toggle', function() {
+                const id = $(this).data('id');
+                const status = $(this).is(':checked') ? 'Active' : 'Inactive';
+                
+                $.ajax({
+                    url: `/v1/admin/issue-category/status-change/${id}`,
+                    type: 'PATCH',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ status: status }),
+                    success: function(res) {
+                        loadCategories();
+                    },
+                    error: function(err) {
+                        alert('Status update failed');
+                        loadCategories();
+                    }
+                });
+            });
+
+            // Delete Category
+            $(document).on('click', '.delete-btn', function() {
+                if (confirm('Are you sure you want to delete this category?')) {
+                    const id = $(this).data('id');
+                    $.ajax({
+                        url: `/v1/admin/issue-category/${id}`,
+                        type: 'DELETE',
+                        success: function(res) {
+                            loadCategories();
+                            alert(res.message);
+                        },
+                        error: function(err) {
+                            alert('Delete failed');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 
 </body>
 

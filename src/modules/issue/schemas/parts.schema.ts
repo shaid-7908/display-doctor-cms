@@ -18,7 +18,7 @@ export class Parts {
     isDeleted:boolean;
 
     @Prop({type:MongooseSchema.Types.ObjectId , ref:'issuecategories'})
-    category_id:Types.ObjectId;
+    category_id:Types.ObjectId | string;
 }
 
 export const PartsSchema = SchemaFactory.createForClass(Parts);
