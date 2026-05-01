@@ -13,6 +13,8 @@ import { CategoryModule } from '@modules/category/category.module';
 import { CmsModule } from '@modules/cms/cms.module';
 import { CmsRepositoryModule } from '@modules/cms/repositories/cms.repository.module';
 import { RoleRepositoryModule } from '@modules/role/repositories/role.repository.module';
+import { IssueModule } from '@modules/issue/issue.module';
+import { IssueRepositoryModule } from '@modules/issue/repositories/issue.repository.module';
 import { ApiConfigModule } from './config.module';
 import { DiscoveryModule } from '@nestjs/core';
 
@@ -35,6 +37,8 @@ import { DiscoveryModule } from '@nestjs/core';
         CmsModule,
         CmsRepositoryModule,
         RoleRepositoryModule,
+        IssueModule,
+        IssueRepositoryModule,
         DiscoveryModule
     ],
     providers: []
