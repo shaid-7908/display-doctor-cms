@@ -47,6 +47,18 @@ export class CmsEjsController {
         };
     }
 
+    @Get('cms/issue-category')
+    @UseGuards(AuthGuard('jwt'))
+    @Render('cms/issue-category')
+    async renderIssueCategoryPage(@LoginUser() user: Partial<UserDocument>) {
+        return {
+            user,
+            projectName: this.configService.get('PROJECT_NAME'),
+            pageName:'Issue Category',
+            title:'Issue Category'
+        };
+    }
+
     @Get('login')
     @Render('cms/login')
     async renderLogin(){
