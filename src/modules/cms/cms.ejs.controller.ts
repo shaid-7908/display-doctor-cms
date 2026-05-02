@@ -59,6 +59,18 @@ export class CmsEjsController {
         };
     }
 
+    @Get('cms/parts')
+    @UseGuards(AuthGuard('jwt'))
+    @Render('cms/parts')
+    async renderPartsPage(@LoginUser() user: Partial<UserDocument>) {
+        return {
+            user,
+            projectName: this.configService.get('PROJECT_NAME'),
+            pageName:'Parts',
+            title:'Parts'
+        };
+    }
+
     @Get('login')
     @Render('cms/login')
     async renderLogin(){
