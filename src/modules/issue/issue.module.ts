@@ -10,6 +10,6 @@ import { IssueController } from './issue.controller';
     imports: [],
     controllers: [IssueCategoryController, PartsController, IssueController],
     providers: [IssueCategoryService, PartsService, IssueService],
-    exports: []
+    exports: [IssueCategoryService, IssueService]
 })
 export class IssueModule { }

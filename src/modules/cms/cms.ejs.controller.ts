@@ -4,13 +4,13 @@ import { Controller, Get, Render, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 
 import { ConfigService } from "@nestjs/config";
-import { AuthService } from "src/auth/auth.service";
+import { IssueCategoryService } from "../issue/issue-category.service";
 
 @Controller('')
 export class CmsEjsController {
     constructor(
         private readonly configService: ConfigService,
-        //private readonly authService: AuthService
+        private readonly issueCategoryService: IssueCategoryService
     ) { }
 
     @Get('')
@@ -68,6 +68,21 @@ export class CmsEjsController {
             projectName: this.configService.get('PROJECT_NAME'),
             pageName:'Parts',
             title:'Parts'
+        };
+    }
+
+    @Get('cms/issues')
+    @UseGuards(AuthGuard('jwt'))
+    @Render('cms/issue-admin')
+    async renderIssueAdminPage(@LoginUser() user: Partial<UserDocument>) {
+        const categories = await this.issueCategoryService.getAll({ limit: 1000, page: 1 });
+        //console.log(categories.data)
+        return {
+            user,
+            projectName: this.configService.get('PROJECT_NAME'),
+            pageName: 'Issue',
+            title: 'Issue',
+            categories: categories.data
         };
     }
 
