@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { MongoIdPipe } from '@common/pipes/mongoid.pipe';
 import { IssueService } from './issue.service';
-import { CreateIssueDto, IssueListingDto, IssueStatusDto, UpdateIssueDto } from './dto/issue.dto';
+import { AssignTechnicianDto, CreateIssueDto, IssueListingDto, IssueStatusDto, UpdateIssueDto } from './dto/issue.dto';
 
 @ApiTags('Issue')
 @Controller('admin/issue')
@@ -60,5 +60,15 @@ export class IssueController {
     @HttpCode(200)
     async delete(@Param('id', new MongoIdPipe()) id: string) {
         return this.issueService.delete(id);
+    }
+
+
+    @Version('1')
+    @Patch('assign-technician/:id')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @HttpCode(200)
+    async assignTechnician(@Param('id', new MongoIdPipe()) id: string, @Body() dto: AssignTechnicianDto) {
+        return this.issueService.assignToTechnician(id, dto);
     }
 }

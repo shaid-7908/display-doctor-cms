@@ -324,7 +324,7 @@
                                 
                                 html += `
                                     <tr>
-                                        <td><strong>${issue.ticket_number}</strong></td>
+                                        <td><a href="/cms/issue-details/${issue._id}"><strong>${issue.ticket_number}</strong></a></td>
                                         <td>${issue.customer_name}</td>
                                         <td>${issue.customer_phone}</td>
                                         <td>${issue.category ? issue.category.name : '-'}</td>

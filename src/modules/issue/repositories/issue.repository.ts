@@ -122,4 +122,49 @@ export class IssueRepository extends BaseRepository<IssueDocument> {
             docs,
         };
     }
+
+
+    async getIssueDetailsForEjs(id:string){
+        const pipeline:PipelineStage[] = [
+            { $match: {_id: new Types.ObjectId(id), isDeleted: false}},
+            {
+                $lookup: {
+                    from: 'issuecategories',
+                    localField: 'category_id',
+                    foreignField: '_id',
+                    as: 'category',
+                },
+            },
+            { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'technician_id',
+                    foreignField: '_id',
+                    as: 'technician',
+                },
+            },
+            { $unwind: { path: '$technician', preserveNullAndEmptyArrays: true } },
+            {
+                $project: {
+                    ticket_number: 1,
+                    customer_name: 1,
+                    customer_email: 1,
+                    customer_phone: 1,
+                    category_id: 1,
+                    'category.name': 1,
+                    technician_id: 1,
+                    'technician.name': 1,
+                    status: 1,
+                    issue_description: 1,
+                    scheduled_date: 1,
+                    resolution_notes: 1,
+                    createdAt: 1,
+                },
+            },
+        ];
+        const data = await this.IssueModel.aggregate(pipeline).exec();
+        if(!data) return null;
+        return data[0];
+    }
 }

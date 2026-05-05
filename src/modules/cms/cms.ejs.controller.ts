@@ -1,16 +1,19 @@
 import { LoginUser } from "@common/decorator/login-user.decorator";
 import { UserDocument } from "@modules/users/schemas/user.schema";
-import { Controller, Get, Render, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Render, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 
 import { ConfigService } from "@nestjs/config";
 import { IssueCategoryService } from "../issue/issue-category.service";
+import { MongoIdPipe } from "@common/pipes/mongoid.pipe";
+import { IssueService } from "@modules/issue/issue.service";
 
 @Controller('')
 export class CmsEjsController {
     constructor(
         private readonly configService: ConfigService,
-        private readonly issueCategoryService: IssueCategoryService
+        private readonly issueCategoryService: IssueCategoryService,
+        private readonly issueService: IssueService
     ) { }
 
     @Get('')
@@ -76,13 +79,30 @@ export class CmsEjsController {
     @Render('cms/issue-admin')
     async renderIssueAdminPage(@LoginUser() user: Partial<UserDocument>) {
         const categories = await this.issueCategoryService.getAll({ limit: 1000, page: 1 });
-        //console.log(categories.data)
         return {
             user,
             projectName: this.configService.get('PROJECT_NAME'),
             pageName: 'Issue',
             title: 'Issue',
             categories: categories.data
+        };
+    }
+
+    @Get('cms/issue-details/:id')
+    @UseGuards(AuthGuard('jwt'))
+    @Render('cms/issue-details')
+    async renderIssueDetailsPage(@Param('id', new MongoIdPipe()) id: string, @LoginUser() user: Partial<UserDocument>) {
+        const issue = await this.issueService.getIssueDetailsForEjs(id);
+        if (!issue) {
+            // You might want to redirect to a 404 page or back to the list
+            // For now, let's just pass null and handle it in the template
+        }
+        return {
+            user,
+            projectName: this.configService.get('PROJECT_NAME'),
+            pageName: 'Issue Details',
+            title: 'Issue Details',
+            issue: issue || null
         };
     }
 

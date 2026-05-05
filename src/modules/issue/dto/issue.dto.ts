@@ -149,3 +149,14 @@ export class IssueListingDto {
     @IsOptional()
     sortOrder?: string;
 }
+
+
+export class AssignTechnicianDto {
+    @IsNotEmpty()
+    @IsMongoId({ message: 'Invalid MongoDB ObjectId' })
+    technician_id: string;
+
+    @IsNotEmpty()
+    @IsDateString({}, { message: 'Date must be a valid ISO date string' })
+    scheduled_date: string;
+}

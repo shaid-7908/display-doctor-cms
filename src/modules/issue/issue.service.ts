@@ -3,7 +3,8 @@ import { Types } from 'mongoose';
 import { ApiResponse } from '@common/types/api-response.type';
 import { Messages } from '@common/constants/messages';
 import { IssueRepository } from './repositories';
-import { CreateIssueDto, IssueListingDto, IssueStatusDto, UpdateIssueDto } from './dto/issue.dto';
+import { AssignTechnicianDto, CreateIssueDto, IssueListingDto, IssueStatusDto, UpdateIssueDto } from './dto/issue.dto';
+import { IssueStatus } from '@common/enum/issue.status.enum';
 
 @Injectable()
 export class IssueService {
@@ -51,5 +52,20 @@ export class IssueService {
         const deleted = await this.issueRepository.updateById({ isDeleted: true }, id);
         if (!deleted) throw new BadRequestException(Messages.SOMETHING_WENT_WRONG);
         return { message: 'Issue deleted successfully.' };
+    }
+    async getIssueDetailsForEjs(id:string){
+        const issue = await this.issueRepository.getIssueDetailsForEjs(id);
+        return issue
+    }
+    async assignToTechnician(issueId: string, body: AssignTechnicianDto) {
+        const checkIssueExists = await this.issueRepository.getByField({_id:new Types.ObjectId(issueId),isDeleted:false});
+        if(!checkIssueExists) throw new NotFoundException('Issue not found!');
+        if(checkIssueExists.status === IssueStatus.OPEN || checkIssueExists.status === IssueStatus.ASSIGNED || checkIssueExists.status === IssueStatus.VISIT_SCHEDULED){
+            const updated = await this.issueRepository.updateById({technician_id:new Types.ObjectId(body.technician_id),scheduled_date:new Date(body.scheduled_date),status:IssueStatus.VISIT_SCHEDULED},new Types.ObjectId(issueId));
+            if(!updated) throw new BadRequestException(Messages.SOMETHING_WENT_WRONG);
+            return { message: 'Issue assigned to technician successfully.', data: updated };
+        }else{
+            throw new BadRequestException('Issue is already assigned to technician!');
+        }
     }
 }
