@@ -37,6 +37,12 @@ export class Issue {
     @Prop({ type: String, default: '',index:true })
     customer_phone: string;
 
+    @Prop({ type: String, default: '' })
+    customer_address: string;
+
+    @Prop({ type: String, default: '' })
+    customer_pincode: string;
+
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'IssueCategory', index: true })
     category_id: Types.ObjectId | string;
 

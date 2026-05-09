@@ -5,6 +5,7 @@ import { Messages } from '@common/constants/messages';
 import { IssueRepository } from './repositories';
 import { AssignTechnicianDto, CreateIssueDto, IssueListingDto, IssueStatusDto, UpdateIssueDto } from './dto/issue.dto';
 import { IssueStatus } from '@common/enum/issue.status.enum';
+import { Issue } from './schemas/issue.schema';
 
 @Injectable()
 export class IssueService {
@@ -30,7 +31,15 @@ export class IssueService {
     async update(id: string, body: UpdateIssueDto): Promise<ApiResponse> {
         const issue = await this.issueRepository.getByField({ _id: new Types.ObjectId(id), isDeleted: false });
         if (!issue) throw new NotFoundException('Issue not found!');
-
+        if(body.technician_id && !body.scheduled_date){
+            throw new BadRequestException('Scheduled date is required when technician is assigned!');
+        }
+        if(body.scheduled_date && !body.technician_id){
+            throw new BadRequestException('Technician is required when scheduled date is provided!');
+        }
+        if(body.scheduled_date && body.technician_id ){
+            body.status = IssueStatus.VISIT_SCHEDULED;
+        }
         const updated = await this.issueRepository.updateById(body, new Types.ObjectId(id));
         if (!updated) throw new BadRequestException(Messages.SOMETHING_WENT_WRONG);
         return { message: 'Issue updated successfully.', data: updated };

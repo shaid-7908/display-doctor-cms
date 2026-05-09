@@ -173,6 +173,16 @@
                                                 <span class="text-muted">Not provided</span>
                                             <% } %>
                                         </div>
+
+                                        <div class="detail-label">Address</div>
+                                        <div class="detail-value">
+                                            <% if (issue.customer_address) { %>
+                                                <i class="fas fa-map-marker-alt fa-sm mr-1 text-muted"></i> <%= issue.customer_address %>
+                                                <% if (issue.customer_pincode) { %> &ndash; <strong><%= issue.customer_pincode %></strong><% } %>
+                                            <% } else { %>
+                                                <span class="text-muted">Not provided</span>
+                                            <% } %>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -185,7 +195,9 @@
                                         <div class="detail-label">Assigned Technician</div>
                                         <div class="detail-value">
                                             <% if (issue.technician) { %>
-                                                <span class="badge badge-info px-3 py-2"><%= issue.technician.name %></span>
+                                                <span class="badge badge-info px-3 my-2 py-2">Name : <%= issue.technician.fullName %></span>
+                                                <span class="badge badge-info px-3 my-2 py-2">Phone : <%= issue.technician.phone %></span>
+                                                <span class="badge badge-info px-3 my-2 py-2">Email : <%= issue.technician.email %></span>
                                             <% } else { %>
                                                 <span class="text-muted">Unassigned</span>
                                             <% } %>

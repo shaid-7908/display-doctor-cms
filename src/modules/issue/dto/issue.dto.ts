@@ -37,6 +37,18 @@ export class CreateIssueDto {
     @Transform(({ value }: TransformFnParams) => value?.trim())
     customer_email?: string;
 
+    @ApiProperty({ description: 'Customer Address', required: false })
+    @IsString()
+    @IsOptional()
+    @Transform(({ value }: TransformFnParams) => value?.trim())
+    customer_address?: string;
+
+    @ApiProperty({ description: 'Customer Pincode (4-8 digits)', required: false })
+    @IsString()
+    @IsOptional()
+    @Transform(({ value }: TransformFnParams) => value?.trim())
+    customer_pincode?: string;
+
     @ApiProperty({ description: 'Issue Description', required: true })
     @IsString()
     @IsNotEmpty({ message: 'issue_description is required' })
@@ -78,6 +90,18 @@ export class UpdateIssueDto {
     @Transform(({ value }: TransformFnParams) => value?.trim())
     customer_email?: string;
 
+    @ApiProperty({ description: 'Customer Address', required: false })
+    @IsString()
+    @IsOptional()
+    @Transform(({ value }: TransformFnParams) => value?.trim())
+    customer_address?: string;
+
+    @ApiProperty({ description: 'Customer Pincode (4-8 digits)', required: false })
+    @IsString()
+    @IsOptional()
+    @Transform(({ value }: TransformFnParams) => value?.trim())
+    customer_pincode?: string;
+
     @ApiProperty({ description: 'Issue Description', required: false })
     @IsString()
     @IsOptional()
@@ -99,6 +123,11 @@ export class UpdateIssueDto {
     @IsOptional()
     @Transform(({ value }: TransformFnParams) => value?.trim())
     resolution_notes?: string;
+
+    @ApiProperty({ description: 'Issue Status', required: false })
+    @IsEnum(IssueStatus)
+    @IsOptional()
+    status?: IssueStatus
 }
 
 export class IssueStatusDto {

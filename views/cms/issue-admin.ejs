@@ -94,6 +94,7 @@
                                         </div>
                                         <div class="col-md-3 mb-2">
                                             <select id="statusFilter" class="form-control">
+                                                <option value="ALL_STATUS">All Status</option>
                                                 <option value="OPEN">Open</option>
                                                 <option value="ASSIGNED">Assigned</option>
                                                 <option value="IN_PROGRESS">In Progress</option>
@@ -184,66 +185,84 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="issueModalLabel">Create New Issue</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <form id="issueForm">
                     <input type="hidden" id="issue_id">
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="customer_name">Customer Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="customer_name" name="customer_name" required>
+
+                        <!-- Locked status banner (shown only for INVOICE_GENERATED / PAID) -->
+                        <div id="lockedBanner" class="alert alert-warning d-none" role="alert">
+                            <i class="fas fa-lock mr-1"></i>
+                            This issue is <strong id="lockedStatusLabel"></strong>. Only cancellation is allowed.
+                        </div>
+
+                        <!-- Core fields (hidden when locked) -->
+                        <div id="coreFields">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="customer_name">Customer Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="customer_name" name="customer_name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="customer_phone">Customer Phone <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="customer_phone" name="customer_phone" placeholder="e.g. 9876543210">
+                                        <small class="form-text text-muted">Enter a valid 10-15 digit phone number.</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="customer_phone">Customer Phone <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="customer_phone" name="customer_phone" required placeholder="e.g. 9876543210">
-                                    <small class="form-text text-muted">Enter a valid 10-15 digit phone number.</small>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="category_id">Issue Category <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="category_id" name="category_id">
+                                            <option value="">Select Category</option>
+                                            <% categories.docs.forEach(cat => { %>
+                                                <option value="<%= cat._id %>"><%= cat.name %></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="customer_email">Customer Email (Optional)</label>
+                                        <input type="email" class="form-control" id="customer_email" name="customer_email">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="customer_address">Address (Optional)</label>
+                                        <input type="text" class="form-control" id="customer_address" name="customer_address" placeholder="Street / Locality">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="customer_pincode">Pincode (Optional)</label>
+                                        <input type="text" class="form-control" id="customer_pincode" name="customer_pincode" placeholder="e.g. 400001" maxlength="8">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="issue_description">Issue Description <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="issue_description" name="issue_description" rows="3"></textarea>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="category_id">Issue Category <span class="text-danger">*</span></label>
-                                    <select class="form-control" id="category_id" name="category_id" required>
-                                        <option value="">Select Category</option>
-                                        <% categories.docs.forEach(cat => { %>
-                                            <option value="<%= cat._id %>"><%= cat.name %></option>
-                                        <% }) %>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="customer_email">Customer Email (Optional)</label>
-                                    <input type="email" class="form-control" id="customer_email" name="customer_email">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="issue_description">Issue Description <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="issue_description" name="issue_description" rows="3" required></textarea>
-                        </div>
+
+                        <!-- Edit-only extended fields -->
                         <div id="editFields" style="display: none;">
                             <hr>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="status">Status</label>
-                                        <select class="form-control" id="status" name="status">
-                                            <option value="OPEN">Open</option>
-                                            <option value="ASSIGNED">Assigned</option>
-                                            <option value="IN_PROGRESS">In Progress</option>
-                                            <option value="VISIT_SCHEDULED">Visit Scheduled</option>
-                                            <option value="RESOLVED">Resolved</option>
-                                            <option value="PAID">Paid</option>
-                                            <option value="WAITING_FOR_PARTS">Waiting for Parts</option>
-                                            <option value="INVOICE_GENERATED">Invoice Generated</option>
-                                            <option value="CANCELLED">Cancelled</option>
+                                        <label for="edit_technician_id">Assign Technician</label>
+                                        <select class="form-control" id="edit_technician_id" name="edit_technician_id">
+                                            <option value="">-- Unassigned --</option>
                                         </select>
                                     </div>
                                 </div>
@@ -254,15 +273,77 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="resolution_notes">Resolution Notes</label>
-                                <textarea class="form-control" id="resolution_notes" name="resolution_notes" rows="2"></textarea>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="status">Status</label>
+                                        <select class="form-control" id="status" name="status">
+                                            <option value="OPEN">Open</option>
+                                            <option value="VISIT_SCHEDULED">Visit Scheduled</option>
+                                            <option value="WAITING_FOR_PARTS">Waiting for Parts</option>
+                                            <option value="RESOLVED">Resolved</option>
+                                            <option value="CANCELLED">Cancelled</option>
+                                        </select>
+                                        <small class="form-text text-muted">Note: Invoice Generated &amp; Paid statuses are managed by the system.</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="resolution_notes">Resolution Notes</label>
+                                        <textarea class="form-control" id="resolution_notes" name="resolution_notes" rows="3"></textarea>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+
+                        <!-- Locked cancel-only status (INVOICE_GENERATED / PAID) -->
+                        <div id="lockedStatusField" style="display: none;">
+                            <hr>
+                            <div class="form-group">
+                                <label for="locked_status">Change Status</label>
+                                <select class="form-control" id="locked_status" name="locked_status">
+                                    <option value="CANCELLED">Cancel this Issue</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" type="submit" id="saveIssueBtn">Save Issue</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Assign Technician Modal -->
+    <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignModalLabel">Assign Technician</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form id="assignForm">
+                    <input type="hidden" id="assign_issue_id">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="technician_id">Select Technician <span class="text-danger">*</span></label>
+                            <select class="form-control" id="assign_technician_id" name="technician_id" required>
+                                <option value="">Loading technicians...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="assign_scheduled_date">Scheduled Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="assign_scheduled_date" name="scheduled_date" required>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <button class="btn btn-primary" type="submit" id="saveIssueBtn">Save Issue</button>
+                        <button class="btn btn-primary" type="submit" id="confirmAssignBtn">Assign</button>
                     </div>
                 </form>
             </div>
@@ -287,6 +368,7 @@
     <script>
         $(document).ready(function () {
             let currentPage = 1;
+            let globEditIssue;
             const limit = 10;
             let isEdit = false;
 
@@ -298,20 +380,21 @@
                 const search = $('#searchInput').val();
                 const status = $('#statusFilter').val();
                 //const category_id = $('#categoryFilter').val();
-
+                 const localPayload = {
+                    page: currentPage,
+                     limit: limit,
+                     search: search,
+                 }
+                 if(status !== 'ALL_STATUS'){
+                     localPayload.status = status;
+                 }
                 $('#issueTableBody').html('<tr><td colspan="7" class="text-center">Loading...</td></tr>');
 
                 $.ajax({
                     url: '/v1/admin/issue/getall',
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({
-                        page: currentPage,
-                        limit: limit,
-                        search: search,
-                        status: status,
-                       // category_id: category_id
-                    }),
+                    data: JSON.stringify(localPayload) ,                                           
                     success: function (res) {
                         const docs = res.data.docs || [];
                         const meta = res.data.meta;
@@ -331,6 +414,7 @@
                                         <td><span class="status-badge status-${statusClass}">${issue.status}</span></td>
                                         <td>${date}</td>
                                         <td>
+                                            <button class="btn btn-sm btn-warning assign-issue-btn" data-id="${issue._id}" title="Assign Technician"><i class="fas fa-user-plus"></i></button>
                                             <button class="btn btn-sm btn-info edit-issue-btn" data-id="${issue._id}" title="Edit"><i class="fas fa-edit"></i></button>
                                             <button class="btn btn-sm btn-danger delete-issue-btn" data-id="${issue._id}" title="Delete"><i class="fas fa-trash"></i></button>
                                         </td>
@@ -424,8 +508,17 @@
                 $('#issueModalLabel').text('Create New Issue');
                 $('#issueForm')[0].reset();
                 $('#issue_id').val('');
+                // Show all core fields, hide edit-only sections
+                $('#coreFields').show();
                 $('#editFields').hide();
-                $('#saveIssueBtn').text('Create Issue');
+                $('#lockedBanner').addClass('d-none');
+                $('#lockedStatusField').hide();
+                // Make core fields required for create
+                $('#customer_name').prop('required', true);
+                $('#customer_phone').prop('required', true);
+                $('#category_id').prop('required', true);
+                $('#issue_description').prop('required', true);
+                $('#saveIssueBtn').text('Create Issue').prop('disabled', false);
             });
 
             // Edit Issue
@@ -433,54 +526,142 @@
                 const id = $(this).data('id');
                 isEdit = true;
                 $('#issueModalLabel').text('Edit Issue');
-                $('#editFields').show();
-                $('#saveIssueBtn').text('Update Issue');
+                $('#saveIssueBtn').text('Update Issue').prop('disabled', false);
+
+                const today = new Date().toISOString().split('T')[0];
+                $('#scheduled_date').attr('min', today);
 
                 $.get(`/v1/admin/issue/${id}`, function(res) {
                     const issue = res.data;
+                    globEditIssue = issue;
+                    const lockedStatuses = ['INVOICE_GENERATED', 'PAID'];
+                    const isLocked = lockedStatuses.includes(issue.status);
+
                     $('#issue_id').val(issue._id);
-                    $('#customer_name').val(issue.customer_name);
-                    $('#customer_phone').val(issue.customer_phone);
-                    $('#customer_email').val(issue.customer_email || '');
-                    $('#category_id').val(issue.category_id);
-                    $('#issue_description').val(issue.issue_description);
-                    $('#status').val(issue.status);
-                    
-                    if (issue.scheduled_date) {
-                        const date = new Date(issue.scheduled_date).toISOString().split('T')[0];
-                        $('#scheduled_date').val(date);
+
+                    if (isLocked) {
+                        // --- LOCKED MODE: only allow cancellation ---
+                        $('#coreFields').hide();
+                        $('#editFields').hide();
+                        $('#lockedBanner').removeClass('d-none');
+                        $('#lockedStatusLabel').text(issue.status.replace(/_/g, ' '));
+                        $('#lockedStatusField').show();
+                        // Remove required from core fields so form submits
+                        $('#customer_name, #customer_phone, #category_id, #issue_description').prop('required', false);
                     } else {
-                        $('#scheduled_date').val('');
+                        // --- FULL ACCESS MODE ---
+                        $('#coreFields').show();
+                        $('#editFields').show();
+                        $('#lockedBanner').addClass('d-none');
+                        $('#lockedStatusField').hide();
+                        $('#customer_name, #customer_phone, #category_id, #issue_description').prop('required', true);
+
+                        // Populate core fields
+                        $('#customer_name').val(issue.customer_name);
+                        $('#customer_phone').val(issue.customer_phone);
+                        $('#customer_email').val(issue.customer_email || '');
+                        $('#customer_address').val(issue.customer_address || '');
+                        $('#customer_pincode').val(issue.customer_pincode || '');
+                        $('#category_id').val(issue.category_id);
+                        $('#issue_description').val(issue.issue_description);
+
+                        // Populate technician dropdown
+                        if (issue.technician_id) {
+                            // Pre-select current technician after technicians have loaded
+                            const checkAndSet = setInterval(function() {
+                                if ($('#edit_technician_id option').length > 1) {
+                                    $('#edit_technician_id').val(issue.technician_id);
+                                    clearInterval(checkAndSet);
+                                }
+                            }, 100);
+                        } else {
+                            $('#edit_technician_id').val('');
+                        }
+
+                        // Populate status (no INVOICE_GENERATED / PAID options in dropdown)
+                        $('#status').val(issue.status);
+
+                        // Scheduled date
+                        if (issue.scheduled_date) {
+                            const date = new Date(issue.scheduled_date).toISOString().split('T')[0];
+                            $('#scheduled_date').val(date);
+                        } else {
+                            $('#scheduled_date').val('');
+                        }
+
+                        $('#resolution_notes').val(issue.resolution_notes || '');
                     }
-                    
-                    $('#resolution_notes').val(issue.resolution_notes || '');
-                    
+
                     $('#issueModal').modal('show');
                 });
             });
 
-            // Form Submit (Add/Edit)
+            // Form Submit (Add / Edit)
             $('#issueForm').submit(function(e) {
                 e.preventDefault();
                 const id = $('#issue_id').val();
-                
-                const data = {
-                    customer_name: $('#customer_name').val(),
-                    customer_phone: $('#customer_phone').val(),
-                    customer_email: $('#customer_email').val() || undefined,
-                    category_id: $('#category_id').val(),
-                    issue_description: $('#issue_description').val()
-                };
+                const lockedStatuses = ['INVOICE_GENERATED', 'PAID'];
 
-                if (isEdit) {
-                    data.status = $('#status').val();
-                    data.scheduled_date = $('#scheduled_date').val() || undefined;
-                    data.resolution_notes = $('#resolution_notes').val() || undefined;
+                let data = {};
+                let url, method;
+
+                if (!isEdit) {
+                    // CREATE
+                    data = {
+                        customer_name: $('#customer_name').val(),
+                        customer_phone: $('#customer_phone').val(),
+                        customer_email: $('#customer_email').val() || undefined,
+                        customer_address: $('#customer_address').val() || undefined,
+                        customer_pincode: $('#customer_pincode').val() || undefined,
+                        category_id: $('#category_id').val(),
+                        issue_description: $('#issue_description').val(),
+                        status: $('#status').val(),
+                        resolution_notes: $('#resolution_notes').val() || undefined
+                    };
+                    url = '/v1/admin/issue';
+                    method = 'POST';
+                } else {
+                    // Check if we are in locked mode
+                    const currentStatusIsLocked = $('#lockedStatusField').is(':visible');
+
+                    if (currentStatusIsLocked) {
+                        // Only send status = CANCELLED
+                        data = { status: 'CANCELLED' };
+                    } else {
+                        // Full update
+                        data = {
+                            customer_name: $('#customer_name').val(),
+                            customer_phone: $('#customer_phone').val(),
+                            customer_email: $('#customer_email').val() || undefined,
+                            customer_address: $('#customer_address').val() || undefined,
+                            customer_pincode: $('#customer_pincode').val() || undefined,
+                            category_id: $('#category_id').val(),
+                            issue_description: $('#issue_description').val(),
+                            status: $('#status').val(),
+                            resolution_notes: $('#resolution_notes').val() || undefined
+                        };
+
+                        // Technician assignment
+                        const techId = $('#edit_technician_id').val();
+                        if (techId ) {
+                            if(globEditIssue.technician_id){
+                                techId !== globEditIssue.technician_id.toString()? data.technician_id = techId : null;
+                            }else{
+                                data.technician_id = techId;
+                            }
+                        }
+
+                        // Scheduled date
+                        const sDate = $('#scheduled_date').val();
+                        if (sDate && sDate !== new Date(globEditIssue.scheduled_date).toISOString().split('T')[0]) data.scheduled_date = sDate;
+                    }
+
+                    url = `/v1/admin/issue/${id}`;
+                    method = 'PATCH';
                 }
 
-                const url = isEdit ? `/v1/admin/issue/${id}` : '/v1/admin/issue';
-                const method = isEdit ? 'PATCH' : 'POST';
-
+                $('#saveIssueBtn').prop('disabled', true).text('Saving...');
+                console.log(data);
                 $.ajax({
                     url: url,
                     type: method,
@@ -492,8 +673,13 @@
                         loadIssues();
                     },
                     error: function(err) {
-                        const msg = err.responseJSON ? (Array.isArray(err.responseJSON.message) ? err.responseJSON.message.join(', ') : err.responseJSON.message) : 'Operation failed';
+                        const msg = err.responseJSON
+                            ? (Array.isArray(err.responseJSON.message) ? err.responseJSON.message.join(', ') : err.responseJSON.message)
+                            : 'Operation failed';
                         alert(msg);
+                    },
+                    complete: function() {
+                        $('#saveIssueBtn').prop('disabled', false).text(isEdit ? 'Update Issue' : 'Create Issue');
                     }
                 });
             });
@@ -514,6 +700,92 @@
                         }
                     });
                 }
+            });
+
+            // --- Assign Technician Logic ---
+            let technicians = [];
+            
+            // Fetch technicians role ID first
+            function fetchTechnicians() {
+                $.ajax({
+                    url: '/v1/admin/role/getall',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ page: 1, limit: 100 }),
+                    success: function(res) {
+                        const roles = res.data.docs || [];
+                        const techRole = roles.find(r => r.role.toLowerCase() === 'technician');
+                        if (techRole) {
+                            loadTechnicianUsers(techRole._id);
+                        }
+                    }
+                });
+            }
+
+            function loadTechnicianUsers(roleId) {
+                $.ajax({
+                    url: '/v1/admin/user/getall',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ page: 1, limit: 1000, role: roleId, status: 'Active' }),
+                    success: function(res) {
+                        technicians = res.data.docs || [];
+                        let assignHtml = '<option value="">Select Technician</option>';
+                        let editHtml = '<option value="">-- Unassigned --</option>';
+                        technicians.forEach(t => {
+                            assignHtml += `<option value="${t._id}">${t.fullName} (${t.userName})</option>`;
+                            editHtml   += `<option value="${t._id}">${t.fullName} (${t.userName})</option>`;
+                        });
+                        $('#assign_technician_id').html(assignHtml);
+                        $('#edit_technician_id').html(editHtml);
+                    }
+                });
+            }
+
+            fetchTechnicians();
+
+            // Open Assign Modal
+            $(document).on('click', '.assign-issue-btn', function() {
+                const id = $(this).data('id');
+                $('#assign_issue_id').val(id);
+                $('#assignForm')[0].reset();
+                
+                // Set min date to today
+                const today = new Date().toISOString().split('T')[0];
+                $('#assign_scheduled_date').attr('min', today);
+                
+                $('#assignModal').modal('show');
+            });
+
+            // Submit Assignment
+            $('#assignForm').submit(function(e) {
+                e.preventDefault();
+                const id = $('#assign_issue_id').val();
+                const data = {
+                    technician_id: $('#assign_technician_id').val(),
+                    scheduled_date: $('#assign_scheduled_date').val()
+                };
+
+                $('#confirmAssignBtn').prop('disabled', true).text('Assigning...');
+
+                $.ajax({
+                    url: `/v1/admin/issue/assign-technician/${id}`,
+                    type: 'PATCH',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function(res) {
+                        $('#assignModal').modal('hide');
+                        alert(res.message);
+                        loadIssues();
+                    },
+                    error: function(err) {
+                        const msg = err.responseJSON ? err.responseJSON.message : 'Assignment failed';
+                        alert(Array.isArray(msg) ? msg.join(', ') : msg);
+                    },
+                    complete: function() {
+                        $('#confirmAssignBtn').prop('disabled', false).text('Assign');
+                    }
+                });
             });
         });
     </script>

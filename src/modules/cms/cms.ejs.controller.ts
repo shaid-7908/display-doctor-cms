@@ -93,6 +93,7 @@ export class CmsEjsController {
     @Render('cms/issue-details')
     async renderIssueDetailsPage(@Param('id', new MongoIdPipe()) id: string, @LoginUser() user: Partial<UserDocument>) {
         const issue = await this.issueService.getIssueDetailsForEjs(id);
+        console.log('issue',issue)
         if (!issue) {
             // You might want to redirect to a 404 page or back to the list
             // For now, let's just pass null and handle it in the template
