@@ -4,6 +4,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { MongoIdPipe } from '@common/pipes/mongoid.pipe';
 import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto, InvoiceListingDto, UpdateInvoiceDto } from './dto/invoice.dto';
+import { LoginUser } from '@common/decorator/login-user.decorator';
+import { UserDocument } from '@modules/users/schemas/user.schema';
 
 @ApiTags('Invoice')
 @Controller('admin/invoice')
@@ -25,8 +27,8 @@ export class InvoiceController {
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Create a new invoice' })
-    async create(@Body() dto: CreateInvoiceDto) {
-        return this.invoiceService.create(dto);
+    async create(@Body() dto: CreateInvoiceDto, @LoginUser() user:Partial<UserDocument>) {
+        return this.invoiceService.create(dto,user);
     }
 
     @Version('1')

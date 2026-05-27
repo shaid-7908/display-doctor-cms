@@ -76,6 +76,27 @@ export class CreateInvoiceDto {
     @Type(() => Number)
     tax?: number;
 
+
+    @ApiProperty({ description: 'Visiting Charge', default: 0 })
+    @IsNumber()
+    @IsOptional()
+    @Type(() => Number)
+    visiting_charge?: number;
+
+    @ApiProperty({ description: 'Warranty in months (0 for no warranty)', default: 0 })
+    @IsNumber()
+    @IsOptional()
+    @Type(() => Number)
+    warranty?: number;
+
+    @ApiProperty({ description: 'Warranty Start Date', required: false })
+    @IsOptional()
+    warranty_start_date?: Date;
+
+    @ApiProperty({ description: 'Warranty End Date', required: false })
+    @IsOptional()
+    warranty_end_date?: Date;
+
     @ApiProperty({ description: 'Total Amount', default: 0 })
     @IsNumber()
     @IsNotEmpty()
@@ -129,6 +150,26 @@ export class UpdateInvoiceDto {
     @IsOptional()
     @Type(() => Number)
     tax?: number;
+
+    @ApiProperty({ description: 'Visiting Charge', required: false })
+    @IsNumber()
+    @IsOptional()
+    @Type(() => Number)
+    visiting_charge?: number;
+
+    @ApiProperty({ description: 'Warranty in months (0 for no warranty)', required: false })
+    @IsNumber()
+    @IsOptional()
+    @Type(() => Number)
+    warranty?: number;
+
+    @ApiProperty({ description: 'Warranty Start Date', required: false })
+    @IsOptional()
+    warranty_start_date?: Date;
+
+    @ApiProperty({ description: 'Warranty End Date', required: false })
+    @IsOptional()
+    warranty_end_date?: Date;
 
     @ApiProperty({ description: 'Total Amount', required: false })
     @IsNumber()

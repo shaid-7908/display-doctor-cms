@@ -53,6 +53,18 @@ export class Invoice {
     @Prop({type:Number,default:0})
     service_charges:number;
 
+    @Prop({type:Number , default:0})
+    visiting_charge:number;
+
+    @Prop({type:Number , default:0})
+    warranty:number;
+
+    @Prop({ type: Date, default: null })
+    warranty_start_date: Date;
+
+    @Prop({ type: Date, default: null })
+    warranty_end_date: Date;
+
     @Prop({type:MongooseSchema.Types.ObjectId,ref:'users',default:null})
     createdBy?:Types.ObjectId | string | null;
 

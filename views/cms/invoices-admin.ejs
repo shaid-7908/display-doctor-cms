@@ -74,9 +74,9 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800"><%= pageName %> Management</h1>
-                        <button class="btn btn-primary btn-sm shadow-sm" data-toggle="modal" data-target="#invoiceModal" id="addInvoiceBtn">
+                        <a href="/cms/create-invoice" class="btn btn-primary btn-sm shadow-sm">
                             <i class="fas fa-plus fa-sm text-white-50"></i> Create New Invoice
-                        </button>
+                        </a>
                     </div>
 
                     <!-- Filter Row -->
@@ -123,6 +123,7 @@
                                             <th>Customer</th>
                                             <th>Customer Phone</th>
                                             <th>Total Amount</th>
+                                            <th>Warranty</th>
                                             <th>Status</th>
                                             <th>Created At</th>
                                             <th>Actions</th>
@@ -224,25 +225,25 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="sub_total">Sub Total ($)</label>
+                                        <label for="sub_total">Sub Total (₹)</label>
                                         <input type="number" class="form-control" id="sub_total" name="sub_total" value="0.00" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="service_charges">Service Charges ($)</label>
+                                        <label for="service_charges">Service Charges (₹)</label>
                                         <input type="number" class="form-control" id="service_charges" name="service_charges" value="0" min="0" step="0.01">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="tax">Tax ($)</label>
-                                        <input type="number" class="form-control" id="tax" name="tax" value="0" min="0" step="0.01">
+                                        <label for="visiting_charge">Visiting Charge (₹)</label>
+                                        <input type="number" class="form-control" id="visiting_charge" name="visiting_charge" value="299.00" min="0" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="discount_amount">Discount ($)</label>
+                                        <label for="discount_amount">Discount (₹)</label>
                                         <input type="number" class="form-control" id="discount_amount" name="discount_amount" value="0" min="0" step="0.01">
                                     </div>
                                 </div>
@@ -251,7 +252,28 @@
 
                         <!-- Status & Total section -->
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="warranty">Warranty Period</label>
+                                    <select class="form-control" id="warranty" name="warranty">
+                                        <option value="0">No Warranty</option>
+                                        <option value="1">1 Month</option>
+                                        <option value="2">2 Months</option>
+                                        <option value="3">3 Months</option>
+                                        <option value="4">4 Months</option>
+                                        <option value="5">5 Months</option>
+                                        <option value="6">6 Months</option>
+                                        <option value="7">7 Months</option>
+                                        <option value="8">8 Months</option>
+                                        <option value="9">9 Months</option>
+                                        <option value="10">10 Months</option>
+                                        <option value="11">11 Months</option>
+                                        <option value="12">12 Months</option>
+                                    </select>
+                                    <small id="warrantyDatesDisplay" class="form-text text-muted d-none"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="status">Invoice Status</label>
                                     <select class="form-control" id="status" name="status">
@@ -261,9 +283,9 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="total_amount">Total Amount ($)</label>
+                                    <label for="total_amount">Total Amount (₹)</label>
                                     <input type="number" class="form-control font-weight-bold text-primary" id="total_amount" name="total_amount" value="0.00" readonly>
                                 </div>
                             </div>
@@ -356,7 +378,7 @@
                     localPayload.status = status;
                 }
                 
-                $('#invoiceTableBody').html('<tr><td colspan="8" class="text-center">Loading Invoices...</td></tr>');
+                $('#invoiceTableBody').html('<tr><td colspan="9" class="text-center">Loading Invoices...</td></tr>');
 
                 $.ajax({
                     url: '/v1/admin/invoice/getall',
@@ -376,6 +398,7 @@
                                 const ticketNumber = invoice.issue ? invoice.issue.ticket_number : '-';
                                 const customerName = invoice.issue ? invoice.issue.customer_name : '-';
                                 const customerPhone = invoice.issue ? invoice.issue.customer_phone : '-';
+                                const warrantyText = invoice.warranty ? `${invoice.warranty} Month(s)` : 'No Warranty';
 
                                 html += `
                                     <tr>
@@ -383,7 +406,8 @@
                                         <td>${ticketNumber}</td>
                                         <td>${customerName}</td>
                                         <td>${customerPhone}</td>
-                                        <td class="font-weight-bold">$${invoice.total_amount.toFixed(2)}</td>
+                                        <td class="font-weight-bold">₹${invoice.total_amount.toFixed(2)}</td>
+                                        <td>${warrantyText}</td>
                                         <td><span class="status-badge status-${statusClass}">${invoice.status}</span></td>
                                         <td>${date}</td>
                                         <td>
@@ -394,7 +418,7 @@
                                 `;
                             });
                         } else {
-                            html = '<tr><td colspan="8" class="text-center">No invoices found.</td></tr>';
+                            html = '<tr><td colspan="9" class="text-center">No invoices found.</td></tr>';
                         }
 
                         $('#invoiceTableBody').html(html);
@@ -403,7 +427,7 @@
                     },
                     error: function (err) {
                         console.error('Error loading invoices data:', err);
-                        $('#invoiceTableBody').html('<tr><td colspan="8" class="text-center text-danger">Error loading data.</td></tr>');
+                        $('#invoiceTableBody').html('<tr><td colspan="9" class="text-center text-danger">Error loading data.</td></tr>');
                     }
                 });
             }
@@ -508,7 +532,7 @@
                             <input type="text" class="form-control form-control-sm item-part-name" value="${escapeHtml(partName)}" required ${disabledAttr}>
                         </div>
                         <div class="col-md-2">
-                            <label class="small font-weight-bold text-muted">Price ($) <span class="text-danger">*</span></label>
+                            <label class="small font-weight-bold text-muted">Price (₹) <span class="text-danger">*</span></label>
                             <input type="number" class="form-control form-control-sm item-part-price" value="${partPrice}" min="0" step="0.01" required ${disabledAttr}>
                         </div>
                         <div class="col-md-3">
@@ -563,40 +587,20 @@
                 $('#sub_total').val(subTotal.toFixed(2));
                 
                 const serviceCharges = parseFloat($('#service_charges').val()) || 0;
-                const tax = parseFloat($('#tax').val()) || 0;
+                const visiting_charge = parseFloat($('#visiting_charge').val()) || 0;
                 const discount = parseFloat($('#discount_amount').val()) || 0;
                 
-                let total = subTotal + serviceCharges + tax - discount;
+                let total = subTotal + serviceCharges + visiting_charge - discount;
                 if (total < 0) total = 0;
                 
                 $('#total_amount').val(total.toFixed(2));
             }
 
             // Recalculate totals on input modification
-            $(document).on('input change', '.item-part-price, #service_charges, #tax, #discount_amount', function() {
+            $(document).on('input change', '.item-part-price, #service_charges, #visiting_charge, #discount_amount', function() {
                 calculateTotals();
             });
 
-            // Trigger Add Invoice modal reset
-            $('#addInvoiceBtn').click(function() {
-                isEdit = false;
-                $('#invoiceModalLabel').text('Create New Invoice');
-                $('#invoiceForm')[0].reset();
-                $('#invoice_id').val('');
-                $('#itemsListContainer').empty();
-                
-                // Form interactions enabled
-                $('#issue_id').prop('disabled', false);
-                $('#addItemBtn').show();
-                $('#saveInvoiceBtn').show();
-                $('#status').prop('disabled', false);
-                $('#service_charges, #tax, #discount_amount').prop('disabled', false);
-                $('#lockedBanner').addClass('d-none');
-                
-                // Add initial empty item row for ease of entry
-                addItemRow();
-                calculateTotals();
-            });
 
             // Trigger Edit Invoice modal
             $(document).on('click', '.edit-invoice-btn', function() {
@@ -612,8 +616,18 @@
                     $('#issue_id').val(invoice.issue_id).prop('disabled', true); // Disallow changing issue associated
                     
                     $('#service_charges').val(invoice.service_charges || 0);
-                    $('#tax').val(invoice.tax || 0);
+                    $('#visiting_charge').val(invoice.visiting_charge || 0);
                     $('#discount_amount').val(invoice.discount_amount || 0);
+                    $('#warranty').val(invoice.warranty || 0);
+                    
+                    if (invoice.warranty && invoice.warranty_start_date && invoice.warranty_end_date) {
+                        const start = new Date(invoice.warranty_start_date).toLocaleDateString();
+                        const end = new Date(invoice.warranty_end_date).toLocaleDateString();
+                        $('#warrantyDatesDisplay').html(`Starts: ${start}<br>Ends: ${end}`).removeClass('d-none');
+                    } else {
+                        $('#warrantyDatesDisplay').addClass('d-none').empty();
+                    }
+                    
                     $('#status').val(invoice.status);
                     
                     const isLocked = invoice.status === 'PAID' || invoice.status === 'CANCELLED';
@@ -626,13 +640,15 @@
                         $('#addItemBtn').hide();
                         $('#saveInvoiceBtn').hide();
                         $('#status').prop('disabled', true);
-                        $('#service_charges, #tax, #discount_amount').prop('disabled', true);
+                        $('#warranty').prop('disabled', true);
+                        $('#service_charges, #visiting_charge, #discount_amount').prop('disabled', true);
                     } else {
                         $('#lockedBanner').addClass('d-none');
                         $('#addItemBtn').show();
                         $('#saveInvoiceBtn').show();
                         $('#status').prop('disabled', false);
-                        $('#service_charges, #tax, #discount_amount').prop('disabled', false);
+                        $('#warranty').prop('disabled', false);
+                        $('#service_charges, #visiting_charge, #discount_amount').prop('disabled', false);
                     }
 
                     // Load invoice items
@@ -680,9 +696,10 @@
                 const sub_total = parseFloat($('#sub_total').val()) || 0;
                 const discount_amount = parseFloat($('#discount_amount').val()) || 0;
                 const service_charges = parseFloat($('#service_charges').val()) || 0;
-                const tax = parseFloat($('#tax').val()) || 0;
+                const visiting_charge = parseFloat($('#visiting_charge').val()) || 0;
                 const total_amount = parseFloat($('#total_amount').val()) || 0;
                 const status = $('#status').val();
+                const warranty = parseInt($('#warranty').val()) || 0;
 
                 let data = {};
                 let url, method;
@@ -694,9 +711,10 @@
                         sub_total: sub_total,
                         discount_amount: discount_amount,
                         service_charges: service_charges,
-                        tax: tax,
+                        visiting_charge: visiting_charge,
                         total_amount: total_amount,
-                        status: status
+                        status: status,
+                        warranty: warranty
                     };
                     url = '/v1/admin/invoice';
                     method = 'POST';
@@ -706,9 +724,10 @@
                         sub_total: sub_total,
                         discount_amount: discount_amount,
                         service_charges: service_charges,
-                        tax: tax,
+                        visiting_charge: visiting_charge,
                         total_amount: total_amount,
-                        status: status
+                        status: status,
+                        warranty: warranty
                     };
                     url = `/v1/admin/invoice/${id}`;
                     method = 'PATCH';

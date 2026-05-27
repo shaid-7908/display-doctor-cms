@@ -120,6 +120,18 @@ export class CmsEjsController {
         };
     }
 
+    @Get('cms/create-invoice')
+    @UseGuards(AuthGuard('jwt'))
+    @Render('cms/create-invoice')
+    async renderCreateInvoicePage(@LoginUser() user: Partial<UserDocument>) {
+        return {
+            user,
+            projectName: this.configService.get('PROJECT_NAME'),
+            pageName:'Create Invoice',
+            title:'Create Invoice'
+        };
+    }
+
     @Get('login')
     @Render('cms/login')
     async renderLogin(){
