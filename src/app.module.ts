@@ -15,6 +15,8 @@ import { CmsRepositoryModule } from '@modules/cms/repositories/cms.repository.mo
 import { RoleRepositoryModule } from '@modules/role/repositories/role.repository.module';
 import { IssueModule } from '@modules/issue/issue.module';
 import { IssueRepositoryModule } from '@modules/issue/repositories/issue.repository.module';
+import { InvoiceModule } from '@modules/invoice/invoice.module';
+import { InvoiceRepositoryModule } from '@modules/invoice/repositories/invoice.repository.module';
 import { ApiConfigModule } from './config.module';
 import { DiscoveryModule } from '@nestjs/core';
 
@@ -39,6 +41,8 @@ import { DiscoveryModule } from '@nestjs/core';
         RoleRepositoryModule,
         IssueModule,
         IssueRepositoryModule,
+        InvoiceModule,
+        InvoiceRepositoryModule,
         DiscoveryModule
     ],
     providers: []

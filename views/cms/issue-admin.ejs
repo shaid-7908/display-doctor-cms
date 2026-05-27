@@ -137,6 +137,7 @@
                                                     <th>Category</th>
                                                     <th>Status</th>
                                                     <th>Created At</th>
+                                                    <th>Visti Date</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -403,6 +404,7 @@
                         if (docs.length > 0) {
                             docs.forEach(issue => {
                                 const date = new Date(issue.createdAt).toLocaleDateString();
+                                const visitDate = issue.scheduled_date ? new Date(issue.scheduled_date).toLocaleDateString() : '-';
                                 const statusClass = issue.status.toLowerCase();
                                 
                                 html += `
@@ -413,6 +415,7 @@
                                         <td>${issue.category ? issue.category.name : '-'}</td>
                                         <td><span class="status-badge status-${statusClass}">${issue.status}</span></td>
                                         <td>${date}</td>
+                                        <td>${visitDate}</td>
                                         <td>
                                             <button class="btn btn-sm btn-warning assign-issue-btn" data-id="${issue._id}" title="Assign Technician"><i class="fas fa-user-plus"></i></button>
                                             <button class="btn btn-sm btn-info edit-issue-btn" data-id="${issue._id}" title="Edit"><i class="fas fa-edit"></i></button>
