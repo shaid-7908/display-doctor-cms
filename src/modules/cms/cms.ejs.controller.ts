@@ -107,6 +107,19 @@ export class CmsEjsController {
         };
     }
 
+
+    @Get('cms/invoices')
+    @UseGuards(AuthGuard('jwt'))
+    @Render('cms/invoices-admin')
+    async renderInvoicesPage(@LoginUser() user: Partial<UserDocument>) {
+        return {
+            user,
+            projectName: this.configService.get('PROJECT_NAME'),
+            pageName:'Invoices',
+            title:'Invoices'
+        };
+    }
+
     @Get('login')
     @Render('cms/login')
     async renderLogin(){
