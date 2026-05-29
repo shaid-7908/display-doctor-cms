@@ -210,6 +210,12 @@ export class InvoiceService {
             letter-spacing: 0.5px;
         }
 
+        .company-logo img {
+            max-height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
         .company-subtitle {
             font-size: 12px;
             color: #718096;
@@ -413,7 +419,7 @@ export class InvoiceService {
         <div class="invoice-header">
             <div class="company-logo-section">
                 <div class="company-logo">
-                    <img src ="${process.env.BACKEND_URL}/uploads/logo/logo.webp" alt="Display Doctor" />
+                    <img src ="http://127.0.0.1:1920/uploads/logo/logo.webp" alt="Display Doctor" />
                 </div>
                 <div class="company-subtitle">
                     Professional Device Repair & Maintenance Services
