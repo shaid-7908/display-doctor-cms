@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Invoice <%= invoice.invoice_number %></title>
+
+    <!-- Custom fonts for this template-->
+    <% if (typeof isPdf !== 'undefined' && isPdf) { %>
+        <link href="file:///<%= publicPath %>/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <link href="file:///<%= publicPath %>/css/sb-admin-2.min.css" rel="stylesheet" type="text/css">
+    <% } else { %>
+        <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <link href="/css/sb-admin-2.min.css" rel="stylesheet" type="text/css">
+    <% } %>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fc;
+            color: #5a5c69;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .invoice-box {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            border: 1px solid #e3e6f0;
+            background-color: #ffffff;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            border-radius: 0.35rem;
+        }
+
+        .invoice-header {
+            border-bottom: 2px solid #e3e6f0;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .company-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #4e73df;
+            text-transform: uppercase;
+        }
+
+        .invoice-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #5a5c69;
+            text-align: right;
+        }
+
+        .details-table td {
+            padding: 4px 0;
+        }
+
+        .items-table th {
+            background-color: #f8f9fc;
+            color: #4e73df;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .totals-section td {
+            padding: 5px 10px;
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 50rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-pending { background-color: #f6c23e; color: #fff; }
+        .status-paid { background-color: #1cc88a; color: #fff; }
+        .status-cancelled { background-color: #e74a3b; color: #fff; }
+
+        @media print {
+            body {
+                background-color: #ffffff;
+            }
+            .invoice-box {
+                margin: 0;
+                padding: 0;
+                border: none;
+                box-shadow: none;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Action Toolbar (Hidden in print) -->
+    <div class="container mt-4 no-print" style="max-width: 800px;">
+        <div class="d-flex justify-content-between align-items-center bg-white p-3 border rounded shadow-sm">
+            <a href="/cms/invoices" class="btn btn-sm btn-secondary">
+                <i class="fas fa-arrow-left mr-1"></i> Back to Invoices
+            </a>
+            <div>
+                <button onclick="window.print()" class="btn btn-sm btn-primary mr-2">
+                    <i class="fas fa-print mr-1"></i> Print / PDF
+                </button>
+                <a href="/v1/admin/invoice/download/<%= invoice._id %>" class="btn btn-sm btn-success">
+                    <i class="fas fa-download mr-1"></i> Download PDF
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Sheet -->
+    <div class="invoice-box">
+        <!-- Header -->
+        <div class="row invoice-header align-items-center">
+            <div class="col-sm-6">
+                <div class="company-logo">
+                    <i class="fas fa-stethoscope mr-2"></i><%= projectName || 'Display Doctor' %>
+                </div>
+                <div class="small text-muted mt-1">
+                    Professional Device Repair & Maintenance Services
+                </div>
+            </div>
+            <div class="col-sm-6 text-sm-right mt-3 mt-sm-0">
+                <div class="invoice-title">INVOICE</div>
+                <div class="text-dark font-weight-bold">#<%= invoice.invoice_number %></div>
+                <div class="small text-muted">Date: <%= new Date(invoice.createdAt).toLocaleDateString() %></div>
+            </div>
+        </div>
+
+        <!-- Billing Info Row -->
+        <div class="row mb-4">
+            <div class="col-sm-6">
+                <h6 class="font-weight-bold text-primary text-uppercase mb-2">Customer Details</h6>
+                <table class="table-sm table-borderless details-table">
+                    <tbody>
+                        <tr>
+                            <td class="font-weight-bold text-dark py-0" colspan="2"><%= invoice.issue ? invoice.issue.customer_name : '-' %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted py-0" style="width: 25px;"><i class="fas fa-phone-alt fa-xs"></i></td>
+                            <td class="py-0"><%= invoice.issue ? invoice.issue.customer_phone : '-' %></td>
+                        </tr>
+                        <% if (invoice.issue && invoice.issue.customer_email) { %>
+                            <tr>
+                                <td class="text-muted py-0"><i class="fas fa-envelope fa-xs"></i></td>
+                                <td class="py-0"><%= invoice.issue.customer_email %></td>
+                            </tr>
+                        <% } %>
+                        <% if (invoice.issue && invoice.issue.customer_address) { %>
+                            <tr>
+                                <td class="text-muted py-0"><i class="fas fa-map-marker-alt fa-xs"></i></td>
+                                <td class="py-0">
+                                    <%= invoice.issue.customer_address %>
+                                    <% if (invoice.issue.customer_pincode) { %> - <%= invoice.issue.customer_pincode %><% } %>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-6 text-sm-right mt-3 mt-sm-0">
+                <h6 class="font-weight-bold text-primary text-uppercase mb-2">Invoice Summary</h6>
+                <table class="table-sm table-borderless details-table float-sm-right">
+                    <tbody>
+                        <tr>
+                            <th class="text-sm-right text-muted py-0 pr-2">Issue Ticket #</th>
+                            <td class="py-0 text-left font-weight-bold text-dark">
+                                <%= invoice.issue ? '#' + invoice.issue.ticket_number : '-' %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="text-sm-right text-muted py-0 pr-2">Status</th>
+                            <td class="py-0 text-left">
+                                <span class="badge badge-<%= invoice.status === 'PAID' ? 'success' : (invoice.status === 'PENDING' ? 'warning' : 'danger') %> font-weight-bold">
+                                    <%= invoice.status %>
+                                </span>
+                            </td>
+                        </tr>
+                        <% if (invoice.warranty > 0) { %>
+                            <tr>
+                                <th class="text-sm-right text-muted py-0 pr-2">Warranty</th>
+                                <td class="py-0 text-left font-weight-bold text-success"><%= invoice.warranty %> Month(s)</td>
+                            </tr>
+                            <% if (invoice.warranty_start_date && invoice.warranty_end_date) { %>
+                                <tr>
+                                    <th class="text-sm-right text-muted py-0 pr-2">Warranty Period</th>
+                                    <td class="py-0 text-left text-muted small">
+                                        <%= new Date(invoice.warranty_start_date).toLocaleDateString() %> to <%= new Date(invoice.warranty_end_date).toLocaleDateString() %>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% } else { %>
+                            <tr>
+                                <th class="text-sm-right text-muted py-0 pr-2">Warranty</th>
+                                <td class="py-0 text-left text-muted">No Warranty</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered items-table">
+                <thead>
+                    <tr>
+                        <th>Item / Part Name</th>
+                        <th>Description</th>
+                        <th class="text-right" style="width: 25%">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (invoice.items && invoice.items.length > 0) { %>
+                        <% invoice.items.forEach(item => { %>
+                            <tr>
+                                <td class="font-weight-bold text-dark"><%= item.part_name %></td>
+                                <td class="text-muted"><%= item.part_description || '-' %></td>
+                                <td class="text-right font-weight-bold">₹<%= item.part_avg_price.toFixed(2) %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">No items billed.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Financial Section -->
+        <div class="row">
+            <div class="col-sm-6 text-muted small align-self-end">
+                <div class="border p-3 rounded bg-light">
+                    <h7 class="font-weight-bold text-dark d-block mb-1">Terms & Conditions:</h7>
+                    1. Warranty is only applicable on parts replaced.<br>
+                    2. Warranty claims require presenting this invoice.<br>
+                    3. Physical damage or water damage voids any warranty.
+                </div>
+            </div>
+            <div class="col-sm-6 mt-3 mt-sm-0">
+                <table class="table table-sm table-borderless totals-section float-sm-right" style="width: 100%; max-width: 320px;">
+                    <tbody>
+                        <tr>
+                            <td class="text-right text-muted">Sub Total</td>
+                            <td class="text-right font-weight-bold text-dark">₹<%= invoice.sub_total.toFixed(2) %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right text-muted">Service Charges</td>
+                            <td class="text-right text-dark">₹<%= invoice.service_charges.toFixed(2) %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right text-muted">Visiting Charges</td>
+                            <td class="text-right text-dark">₹<%= invoice.visiting_charge.toFixed(2) %></td>
+                        </tr>
+                        <% if (invoice.discount_amount > 0) { %>
+                            <tr>
+                                <td class="text-right text-danger">Discount</td>
+                                <td class="text-right font-weight-bold text-danger">-₹<%= invoice.discount_amount.toFixed(2) %></td>
+                            </tr>
+                        <% } %>
+                        <tr class="border-top" style="border-top-width: 2px !important;">
+                            <td class="text-right font-weight-bold text-dark h5">Grand Total</td>
+                            <td class="text-right font-weight-bold text-primary h5">₹<%= invoice.total_amount.toFixed(2) %></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-5 pt-4 border-top text-muted small">
+            Thank you for choosing <strong><%= projectName || 'Display Doctor' %></strong>! We value your business.
+        </div>
+    </div>
+
+</body>
+
+</html>

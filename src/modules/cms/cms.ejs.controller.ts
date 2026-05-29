@@ -7,13 +7,15 @@ import { ConfigService } from "@nestjs/config";
 import { IssueCategoryService } from "../issue/issue-category.service";
 import { MongoIdPipe } from "@common/pipes/mongoid.pipe";
 import { IssueService } from "@modules/issue/issue.service";
+import { InvoiceService } from "../invoice/invoice.service";
 
 @Controller('')
 export class CmsEjsController {
     constructor(
         private readonly configService: ConfigService,
         private readonly issueCategoryService: IssueCategoryService,
-        private readonly issueService: IssueService
+        private readonly issueService: IssueService,
+        private readonly invoiceService: InvoiceService
     ) { }
 
     @Get('')
@@ -129,6 +131,25 @@ export class CmsEjsController {
             projectName: this.configService.get('PROJECT_NAME'),
             pageName:'Create Invoice',
             title:'Create Invoice'
+        };
+    }
+
+    @Get('cms/invoice/view/:id')
+    @UseGuards(AuthGuard('jwt'))
+    @Render('cms/invoice-format')
+    async renderInvoiceFormatPage(@Param('id', new MongoIdPipe()) id: string, @LoginUser() user: Partial<UserDocument>) {
+        const invoice = await this.invoiceService.findOne(id);
+        const populatedInvoice = await invoice.populate('issue_id');
+        
+        return {
+            user,
+            projectName: this.configService.get('PROJECT_NAME'),
+            invoice: {
+                ...populatedInvoice.toObject(),
+                issue: populatedInvoice.issue_id
+            },
+            isPdf: false,
+            publicPath: ''
         };
     }
 
