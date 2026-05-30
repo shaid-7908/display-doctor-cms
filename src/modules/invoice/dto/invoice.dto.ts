@@ -8,6 +8,7 @@ import {
     IsNumber,
     IsOptional,
     IsString,
+    ValidateIf,
     ValidateNested,
 } from 'class-validator';
 import { InvoiceStatus } from '@common/enum/invoice.status.enum';
@@ -29,10 +30,10 @@ class InvoiceItemDto {
     @IsOptional()
     part_description: string;
 
-    @ApiProperty({ description: 'Part ID (ObjectId)', required: false })
+    @ApiProperty({ description: 'Part ID (ObjectId)', required: false, nullable: true })
+    @ValidateIf((o) => o.part_id !== undefined && o.part_id !== null && o.part_id !== '' && o.part_id !== 'null')
     @IsMongoId({ message: 'part_id must be a valid MongoDB ObjectId' })
-    @IsOptional()
-    part_id?: string;
+    part_id?: string | null;
 }
 
 export class CreateInvoiceDto {

@@ -130,7 +130,21 @@ export class CmsEjsController {
             user,
             projectName: this.configService.get('PROJECT_NAME'),
             pageName:'Create Invoice',
-            title:'Create Invoice'
+            title:'Create Invoice',
+            invoiceId: undefined
+        };
+    }
+
+    @Get('cms/invoice/edit/:id')
+    @UseGuards(AuthGuard('jwt'))
+    @Render('cms/edit-invoice')
+    async renderEditInvoicePage(@Param('id', new MongoIdPipe()) id: string, @LoginUser() user: Partial<UserDocument>) {
+        return {
+            user,
+            projectName: this.configService.get('PROJECT_NAME'),
+            pageName: 'Edit Invoice',
+            title: 'Edit Invoice',
+            invoiceId: id
         };
     }
 

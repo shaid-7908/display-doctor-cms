@@ -32,7 +32,7 @@ export class InvoiceService {
     }
 
     async findOne(id: string) {
-        const invoice = await this.invoiceRepository.getById(id);
+        const invoice = await this.invoiceRepository.getByIdPopulated(id);
         if (!invoice || invoice.isDeleted) {
             throw new NotFoundException('Invoice not found');
         }
@@ -63,13 +63,13 @@ export class InvoiceService {
 
     async generatePdf(id: string): Promise<Buffer> {
         const invoice = await this.findOne(id);
-        const populatedInvoice = await invoice.populate('issue_id');
+        const populatedInvoice = await invoice.populate('issue_id') as any;
         
         const invoiceObj = {
             ...populatedInvoice.toObject(),
             issue: populatedInvoice.issue_id as any
         };
-        console.log(invoiceObj)
+        //console.log(invoiceObj)
         const projectName = this.configService.get('PROJECT_NAME') || 'Display Doctor';
 
         const itemsHtml = (invoiceObj.items && invoiceObj.items.length > 0)
@@ -428,7 +428,7 @@ export class InvoiceService {
             <div class="invoice-title-section">
                 <h1 class="invoice-title">INVOICE</h1>
                 <div class="invoice-number">#${invoiceObj.invoice_number}</div>
-                <div class="invoice-date">Date: ${new Date().toLocaleDateString()}</div>
+                <div class="invoice-date">Date: ${new Date(invoiceObj.createdAt).toLocaleDateString()}</div>
             </div>
         </div>
 

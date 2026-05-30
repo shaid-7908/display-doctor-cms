@@ -62,7 +62,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         // });
 
         if (!accessToken || isExpired || !isDbValid) {
-            console.log('[JwtStrategy] Access token is missing, expired, or database-invalid. Checking refresh token...');
+            //console.log('[JwtStrategy] Access token is missing, expired, or database-invalid. Checking refresh token...');
             const refreshToken = req?.cookies?.refresh_token;
             if (refreshToken) {
                 try {
