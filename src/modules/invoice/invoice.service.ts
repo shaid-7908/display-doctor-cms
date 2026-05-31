@@ -72,7 +72,7 @@ export class InvoiceService {
 
     async generatePdf(id: string): Promise<Buffer> {
         const invoice = await this.findOne(id);
-        const populatedInvoice = await invoice.populate('issue_id') as any;
+        const populatedInvoice = await invoice.populate(['issue_id', 'assigendTo']) as any;
         
         const invoiceObj = {
             ...populatedInvoice.toObject(),
@@ -150,6 +150,19 @@ export class InvoiceService {
                 <tr>
                     <th style="text-align: right; color: #718096; font-weight: 500; padding: 4px 12px 4px 0; font-size: 13px;">Warranty</th>
                     <td style="text-align: left; color: #718096; padding: 4px 0; font-size: 13px;">No Warranty</td>
+                </tr>
+            `;
+        }
+
+        let technicianHtml = '';
+        if (invoiceObj.assigendTo) {
+            technicianHtml = `
+                <tr>
+                    <th style="text-align: right; color: #718096; font-weight: 500; padding: 4px 12px 4px 0; font-size: 13px;">Technician</th>
+                    <td style="text-align: left; font-weight: 600; color: #2d3748; padding: 4px 0; font-size: 13px;">
+                        ${invoiceObj.assigendTo.fullName || '-'}
+                        ${invoiceObj.assigendTo.phone ? `<br><span style="font-weight: normal; color: #718096; font-size: 12px;">📞 ${invoiceObj.assigendTo.phone}</span>` : ''}
+                    </td>
                 </tr>
             `;
         }
@@ -497,6 +510,7 @@ export class InvoiceService {
                             </td>
                         </tr>
                         ${warrantyHtml}
+                        ${technicianHtml}
                     </tbody>
                 </table>
             </div>

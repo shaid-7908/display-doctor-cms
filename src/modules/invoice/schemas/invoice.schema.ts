@@ -84,7 +84,7 @@ export class Invoice {
 
     @Prop({
         type:MongooseSchema.Types.ObjectId,
-        ref:'users',
+        ref:'User',
         index:true,
         default:null
     })

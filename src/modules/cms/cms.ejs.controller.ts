@@ -153,7 +153,7 @@ export class CmsEjsController {
     @Render('cms/invoice-format')
     async renderInvoiceFormatPage(@Param('id', new MongoIdPipe()) id: string, @LoginUser() user: Partial<UserDocument>) {
         const invoice = await this.invoiceService.findOne(id);
-        const populatedInvoice = await invoice.populate('issue_id');
+        const populatedInvoice = await invoice.populate(['issue_id', 'assigendTo']);
         
         return {
             user,

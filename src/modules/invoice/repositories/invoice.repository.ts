@@ -106,9 +106,14 @@ export class InvoiceRepository extends BaseRepository<InvoiceDocument> {
 
     async getByIdPopulated(id: string | Types.ObjectId): Promise<InvoiceDocument | null> {
         return await this.InvoiceModel.findById(id)
-            .populate({
-                path: 'issue_id',
-                populate: { path: 'category_id' }
-            });
+            .populate([
+                {
+                    path: 'issue_id',
+                    populate: { path: 'category_id' }
+                },
+                {
+                    path: 'assigendTo'
+                }
+            ]);
     }
 }

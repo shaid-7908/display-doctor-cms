@@ -185,6 +185,17 @@
                                 </span>
                             </td>
                         </tr>
+                        <% if (invoice.assigendTo) { %>
+                            <tr>
+                                <th class="text-sm-right text-muted py-0 pr-2">Technician</th>
+                                <td class="py-0 text-left font-weight-bold text-dark">
+                                    <%= invoice.assigendTo.fullName %>
+                                    <% if (invoice.assigendTo.phone) { %>
+                                        <br><span class="text-muted small" style="font-weight: normal;">📞 <%= invoice.assigendTo.phone %></span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% } %>
                         <% if (invoice.warranty > 0) { %>
                             <tr>
                                 <th class="text-sm-right text-muted py-0 pr-2">Warranty</th>
