@@ -83,7 +83,7 @@
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <form id="filterForm" class="row">
-                                <div class="col-md-5 mb-2">
+                                <div class="col-md-4 mb-2">
                                     <div class="input-group">
                                         <input type="text" id="searchInput" class="form-control" placeholder="Search by invoice number...">
                                         <div class="input-group-append">
@@ -93,7 +93,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4 mb-2">
+                                <div class="col-md-3 mb-2">
                                     <select id="statusFilter" class="form-control">
                                         <option value="ALL_STATUS">All Status</option>
                                         <option value="PENDING">Pending</option>
@@ -102,6 +102,11 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3 mb-2">
+                                    <select id="technicianFilter" class="form-control">
+                                        <option value="ALL_TECHNICIANS">All Technicians</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-2">
                                     <button type="button" id="resetFilters" class="btn btn-secondary btn-block">Reset</button>
                                 </div>
                             </form>
@@ -122,6 +127,7 @@
                                             <th>Ticket #</th>
                                             <th>Customer</th>
                                             <th>Customer Phone</th>
+                                            <th>Technician</th>
                                             <th>Total Amount</th>
                                             <th>Warranty</th>
                                             <th>Status</th>
@@ -323,6 +329,7 @@
             // Load Supporting Data
             loadParts();
             loadIssues();
+            fetchTechnicians();
 
             // Initial Invoices load
             loadInvoices();
@@ -364,10 +371,45 @@
                 });
             }
 
+            // Fetch technicians logic for filter
+            function fetchTechnicians() {
+                $.ajax({
+                    url: '/v1/admin/role/getall',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ page: 1, limit: 100 }),
+                    success: function(res) {
+                        const roles = res.data.docs || [];
+                        const techRole = roles.find(r => r.role.toLowerCase() === 'technician');
+                        if (techRole) {
+                            loadTechnicianUsers(techRole._id);
+                        }
+                    }
+                });
+            }
+
+            function loadTechnicianUsers(roleId) {
+                $.ajax({
+                    url: '/v1/admin/user/getall',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ page: 1, limit: 1000, role: roleId, status: 'Active' }),
+                    success: function(res) {
+                        const techniciansList = res.data.docs || [];
+                        let techFilterHtml = '<option value="ALL_TECHNICIANS">All Technicians</option>';
+                        techniciansList.forEach(t => {
+                            techFilterHtml += `<option value="${t._id}">${t.fullName} (${t.userName})</option>`;
+                        });
+                        $('#technicianFilter').html(techFilterHtml);
+                    }
+                });
+            }
+
             // Fetch and render invoices list
             function loadInvoices() {
                 const search = $('#searchInput').val();
                 const status = $('#statusFilter').val();
+                const technician = $('#technicianFilter').val();
                 
                 const localPayload = {
                     page: currentPage,
@@ -377,8 +419,11 @@
                 if (status !== 'ALL_STATUS') {
                     localPayload.status = status;
                 }
+                if (technician && technician !== 'ALL_TECHNICIANS') {
+                    localPayload.assigendTo = technician;
+                }
                 
-                $('#invoiceTableBody').html('<tr><td colspan="9" class="text-center">Loading Invoices...</td></tr>');
+                $('#invoiceTableBody').html('<tr><td colspan="10" class="text-center">Loading Invoices...</td></tr>');
 
                 $.ajax({
                     url: '/v1/admin/invoice/getall',
@@ -398,6 +443,7 @@
                                 const ticketNumber = invoice.issue ? invoice.issue.ticket_number : '-';
                                 const customerName = invoice.issue ? invoice.issue.customer_name : '-';
                                 const customerPhone = invoice.issue ? invoice.issue.customer_phone : '-';
+                                const technicianName = invoice.technician ? invoice.technician.fullName : 'Unassigned';
                                 const warrantyText = invoice.warranty ? `${invoice.warranty} Month(s)` : 'No Warranty';
 
                                 html += `
@@ -406,6 +452,7 @@
                                         <td>${ticketNumber}</td>
                                         <td>${customerName}</td>
                                         <td>${customerPhone}</td>
+                                        <td>${technicianName}</td>
                                         <td class="font-weight-bold">₹${invoice.total_amount.toFixed(2)}</td>
                                         <td>${warrantyText}</td>
                                         <td><span class="status-badge status-${statusClass}">${invoice.status}</span></td>
@@ -420,7 +467,7 @@
                                 `;
                             });
                         } else {
-                            html = '<tr><td colspan="9" class="text-center">No invoices found.</td></tr>';
+                            html = '<tr><td colspan="10" class="text-center">No invoices found.</td></tr>';
                         }
 
                         $('#invoiceTableBody').html(html);
@@ -429,7 +476,7 @@
                     },
                     error: function (err) {
                         console.error('Error loading invoices data:', err);
-                        $('#invoiceTableBody').html('<tr><td colspan="9" class="text-center text-danger">Error loading data.</td></tr>');
+                        $('#invoiceTableBody').html('<tr><td colspan="10" class="text-center text-danger">Error loading data.</td></tr>');
                     }
                 });
             }
@@ -489,7 +536,7 @@
                 loadInvoices();
             });
 
-            $('#statusFilter').change(function() {
+            $('#statusFilter, #technicianFilter').change(function() {
                 currentPage = 1;
                 loadInvoices();
             });

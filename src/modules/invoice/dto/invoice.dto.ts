@@ -222,6 +222,11 @@ export class InvoiceListingDto {
     @IsOptional()
     status?: InvoiceStatus;
 
+    @ApiProperty({ description: 'Filter by technician (User ID)', required: false })
+    @IsMongoId({ message: 'assigendTo must be a valid MongoDB ObjectId' })
+    @IsOptional()
+    assigendTo?: string;
+
     @ApiProperty({ description: 'Sort Field', required: false })
     @IsString()
     @IsOptional()

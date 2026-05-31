@@ -38,6 +38,10 @@ export class InvoiceRepository extends BaseRepository<InvoiceDocument> {
             and_clauses.push({ status: paginatedDto.status });
         }
 
+        if (paginatedDto.assigendTo) {
+            and_clauses.push({ assigendTo: new Types.ObjectId(paginatedDto.assigendTo) });
+        }
+
         const conditions = { $and: and_clauses };
 
         const sortField = paginatedDto.sortField || 'createdAt';
@@ -54,6 +58,15 @@ export class InvoiceRepository extends BaseRepository<InvoiceDocument> {
                 },
             },
             { $unwind: { path: '$issue', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'assigendTo',
+                    foreignField: '_id',
+                    as: 'technician',
+                },
+            },
+            { $unwind: { path: '$technician', preserveNullAndEmptyArrays: true } },
             { $sort: { [sortField]: sortOrder } },
             { $skip: skip },
             { $limit: +limit },
