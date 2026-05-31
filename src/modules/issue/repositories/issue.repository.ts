@@ -148,6 +148,15 @@ export class IssueRepository extends BaseRepository<IssueDocument> {
             },
             { $unwind: { path: '$technician', preserveNullAndEmptyArrays: true } },
             {
+                $lookup:{
+                    from:'invoices',
+                    localField:'_id',
+                    foreignField:'issue_id',
+                    as:'invoice',
+                }
+            },
+            { $unwind: { path: '$invoice', preserveNullAndEmptyArrays: true } },
+            {
                 $project: {
                     ticket_number: 1,
                     customer_name: 1,
@@ -164,6 +173,7 @@ export class IssueRepository extends BaseRepository<IssueDocument> {
                     'technician.email':1,
                     status: 1,
                     issue_description: 1,
+                    invoice:1,
                     scheduled_date: 1,
                     resolution_notes: 1,
                     createdAt: 1,

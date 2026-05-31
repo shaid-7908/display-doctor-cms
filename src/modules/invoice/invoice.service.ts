@@ -4,15 +4,21 @@ import { CreateInvoiceDto, InvoiceListingDto, UpdateInvoiceDto } from './dto/inv
 import { UserDocument } from '@modules/users/schemas/user.schema';
 import { ConfigService } from '@nestjs/config';
 import puppeteer from 'puppeteer';
+import { IssueRepository } from '@modules/issue/repositories';
+import { Types } from 'mongoose';
+import { IssueStatus } from '@common/enum/issue.status.enum';
 
 @Injectable()
 export class InvoiceService {
     constructor(
         private readonly invoiceRepository: InvoiceRepository,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService ,
+        private readonly issueRepo:IssueRepository
     ) {}
 
     async create(createInvoiceDto: CreateInvoiceDto , user:Partial<UserDocument>) {
+        const issue = await this.issueRepo.getByField({_id:new Types.ObjectId(createInvoiceDto.issue_id.toString()),isDeleted:false})
+        if(!issue) throw new NotFoundException('Issue not found');
         if (createInvoiceDto.warranty && createInvoiceDto.warranty > 0) {
             const start = new Date();
             const end = new Date();
@@ -24,6 +30,7 @@ export class InvoiceService {
             createInvoiceDto.warranty_end_date = null;
         }
         createInvoiceDto.createdBy = user?._id.toString();
+        await this.issueRepo.updateById({status:IssueStatus.INVOICE_GENERATED},issue._id)
         return await this.invoiceRepository.save(createInvoiceDto);
     }
 
@@ -220,6 +227,13 @@ export class InvoiceService {
             font-size: 12px;
             color: #718096;
             margin-top: 4px;
+        }
+
+        .company-address {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 4px;
+            line-height: 1.4;
         }
 
         .invoice-title-section {
@@ -423,6 +437,9 @@ export class InvoiceService {
                 </div>
                 <div class="company-subtitle">
                     Professional Device Repair & Maintenance Services
+                </div>
+                <div class="company-address">
+                    2/3A Christopher lane Kolkata 14
                 </div>
             </div>
             <div class="invoice-title-section">

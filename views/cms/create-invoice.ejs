@@ -296,16 +296,38 @@
     <script>
         $(document).ready(function () {
             let partSearchTimeout;
+            let issueSearchTimeout;
+
+            // Check if ticketNumber query parameter is present for auto-population
+            const urlParams = new URLSearchParams(window.location.search);
+            const preselectedTicket = urlParams.get('ticketNumber');
+            if (preselectedTicket) {
+                $('#issueSearchInput').val(preselectedTicket);
+                searchIssues(true);
+            }
 
             // Search Issues
-            $('#searchIssueBtn').click(searchIssues);
+            $('#searchIssueBtn').click(function () {
+                clearTimeout(issueSearchTimeout);
+                searchIssues();
+            });
+            $('#issueSearchInput').on('input', function () {
+                clearTimeout(issueSearchTimeout);
+                const query = $(this).val().trim();
+                if (!query) {
+                    $('#issueSearchResults').html('<p class="text-muted text-center py-4">Search for an active issue ticket to assign to this invoice.</p>');
+                    return;
+                }
+                issueSearchTimeout = setTimeout(searchIssues, 300);
+            });
             $('#issueSearchInput').keypress(function (e) {
                 if (e.which === 13) {
+                    clearTimeout(issueSearchTimeout);
                     searchIssues();
                 }
             });
 
-            function searchIssues() {
+            function searchIssues(autoSelect = false) {
                 const query = $('#issueSearchInput').val().trim();
                 if (!query) {
                     $('#issueSearchResults').html('<p class="text-muted text-center py-4">Please type a ticket number, customer name, or phone.</p>');
@@ -346,6 +368,20 @@
                             `;
                         });
                         $('#issueSearchResults').html(html);
+
+                        if (autoSelect && docs.length > 0) {
+                            const targetIssue = docs.find(issue => issue.ticket_number.toString() === preselectedTicket.toString()) || docs[0];
+                            if (targetIssue) {
+                                $('#selected_issue_id').val(targetIssue._id);
+                                $('#lbl_ticket_number').text('Ticket #' + targetIssue.ticket_number);
+                                $('#lbl_customer_name').text(targetIssue.customer_name);
+                                $('#lbl_customer_phone').text(targetIssue.customer_phone);
+                                $('#lbl_category_name').text(targetIssue.category ? targetIssue.category.name : '-');
+
+                                $('#issueSearchCard').addClass('d-none');
+                                $('#selectedIssueCard').removeClass('d-none');
+                            }
+                        }
                     },
                     error: function (err) {
                         console.error(err);
