@@ -19,6 +19,7 @@ export class InvoiceService {
     async create(createInvoiceDto: CreateInvoiceDto , user:Partial<UserDocument>) {
         const issue = await this.issueRepo.getByField({_id:new Types.ObjectId(createInvoiceDto.issue_id.toString()),isDeleted:false})
         if(!issue) throw new NotFoundException('Issue not found');
+        if(!issue.technician_id) throw new NotFoundException('Issue not assigned to any technician');
         if (createInvoiceDto.warranty && createInvoiceDto.warranty > 0) {
             const start = new Date();
             const end = new Date();
@@ -30,6 +31,7 @@ export class InvoiceService {
             createInvoiceDto.warranty_end_date = null;
         }
         createInvoiceDto.createdBy = user?._id.toString();
+        createInvoiceDto.assigendTo = issue.technician_id?.toString() || null;
         await this.issueRepo.updateById({status:IssueStatus.INVOICE_GENERATED},issue._id)
         return await this.invoiceRepository.save(createInvoiceDto);
     }

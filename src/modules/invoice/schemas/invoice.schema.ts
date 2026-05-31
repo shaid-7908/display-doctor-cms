@@ -84,6 +84,14 @@ export class Invoice {
 
     @Prop({
         type:MongooseSchema.Types.ObjectId,
+        ref:'users',
+        index:true,
+        default:null
+    })
+    assigendTo?:Types.ObjectId | string | null;
+
+    @Prop({
+        type:MongooseSchema.Types.ObjectId,
         ref:'invoices',
         default:null
     })

@@ -71,6 +71,11 @@ export class CreateInvoiceDto {
     @IsOptional()
     createdBy?: string;
 
+    @ApiProperty({ description: 'Assigned To (User ID)', required: false })
+    @IsMongoId({ message: 'createdBy must be a valid MongoDB ObjectId' })
+    @IsOptional()
+    assigendTo?: string;
+
     @ApiProperty({ description: 'Tax', default: 0 })
     @IsNumber()
     @IsOptional()
