@@ -122,6 +122,18 @@ export class CmsEjsController {
         };
     }
 
+    @Get('cms/warranties')
+    @UseGuards(AuthGuard('jwt'))
+    @Render('cms/warranties')
+    async renderWarrantiesPage(@LoginUser() user: Partial<UserDocument>) {
+        return {
+            user,
+            projectName: this.configService.get('PROJECT_NAME'),
+            pageName:'Warranties',
+            title:'Warranties'
+        };
+    }
+
     @Get('cms/create-invoice')
     @UseGuards(AuthGuard('jwt'))
     @Render('cms/create-invoice')

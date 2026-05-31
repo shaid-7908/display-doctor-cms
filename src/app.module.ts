@@ -19,6 +19,7 @@ import { InvoiceModule } from '@modules/invoice/invoice.module';
 import { InvoiceRepositoryModule } from '@modules/invoice/repositories/invoice.repository.module';
 import { ApiConfigModule } from './config.module';
 import { DiscoveryModule } from '@nestjs/core';
+import { WarrentyModule } from '@modules/warrenty/warrenty.module';
 
 
 
@@ -43,7 +44,8 @@ import { DiscoveryModule } from '@nestjs/core';
         IssueRepositoryModule,
         InvoiceModule,
         InvoiceRepositoryModule,
-        DiscoveryModule
+        DiscoveryModule,
+        WarrentyModule
     ],
     providers: []
 })
