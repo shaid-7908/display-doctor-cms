@@ -1,4 +1,7 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument } from 'mongoose';
+
+export type SettingsDocument = HydratedDocument<Settings>;
 
 @Schema({ timestamps: true, versionKey: false })
 export class Settings {
@@ -11,3 +14,5 @@ export class Settings {
     @Prop({ type: Boolean, default: false })
     isDeleted: boolean;
 }
+
+export const SettingsSchema = SchemaFactory.createForClass(Settings);

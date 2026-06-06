@@ -8,18 +8,27 @@ import { extname } from 'path';
 import { S3Client } from '@aws-sdk/client-s3';
 import multerS3 from 'multer-s3';
 
-export const allowedMimeTypes = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv'];
-const allowedExtensions = ['.jpeg', '.jpg', '.png', '.gif', '.pdf'];
+export const allowedMimeTypes = ['image/jpeg', 'image/png','image/webp', 'application/pdf', 'text/csv'];
+const allowedExtensions = ['.jpeg', '.jpg', '.png', '.gif', '.pdf','.webp'];
 
-// AWS S3 client setup
-const s3 = new S3Client({
-    region: process.env.AWS_REGION || 'ap-south-1',
-    credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
-    },
-    endpoint: process.env.AWS_S3_ENDPOINT || undefined,
-});
+// AWS S3 client setup (lazy initialized via Proxy to ensure env variables are loaded)
+let realS3: S3Client | null = null;
+const s3 = new Proxy({}, {
+    get(target, prop) {
+        if (!realS3) {
+            realS3 = new S3Client({
+                region: process.env.AWS_REGION || 'ap-south-1',
+                credentials: {
+                    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+                    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+                },
+                endpoint: process.env.AWS_S3_ENDPOINT || undefined,
+            });
+        }
+        const value = Reflect.get(realS3, prop);
+        return typeof value === 'function' ? value.bind(realS3) : value;
+    }
+}) as S3Client;
 
 const s3FileFilter = (_req: Request, file: Express.Multer.File, callback: any) => {
     if (!allowedMimeTypes.includes(file.mimetype)) {

@@ -18,7 +18,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
         const exceptionStatus = (exception.getStatus && exception.getStatus()) || HttpStatus.INTERNAL_SERVER_ERROR;
-
+        console.log(exception)
         // ── Redirect browser (EJS) requests to /login on 401 ──────────────
         // A request is a "browser page" request when:
         //   • The status is 401 (Unauthorized / guard failed)

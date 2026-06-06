@@ -20,8 +20,8 @@ import { InvoiceRepositoryModule } from '@modules/invoice/repositories/invoice.r
 import { ApiConfigModule } from './config.module';
 import { DiscoveryModule } from '@nestjs/core';
 import { WarrentyModule } from '@modules/warrenty/warrenty.module';
-
-
+import { SettingsModule } from '@modules/settings/settings.module';
+import { SettingsRepositoryModule } from '@modules/settings/repository/settings.repository.module';
 
 @Module({
     imports: [
@@ -45,7 +45,9 @@ import { WarrentyModule } from '@modules/warrenty/warrenty.module';
         InvoiceModule,
         InvoiceRepositoryModule,
         DiscoveryModule,
-        WarrentyModule
+        WarrentyModule,
+        SettingsModule,
+        SettingsRepositoryModule
     ],
     providers: []
 })
