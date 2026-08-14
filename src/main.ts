@@ -21,7 +21,7 @@ async function bootstrap() {
     const logger = app.get<Logger>(Logger);
 
     app.enableCors({
-        origin: '*',
+        origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://your-production-url.com'],
         methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
         credentials: true
     });

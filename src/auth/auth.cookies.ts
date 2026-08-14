@@ -8,7 +8,7 @@ export const REFRESH_TOKEN_COOKIE = 'refresh_token';
 export const BASE_COOKIE_OPTIONS = {
     httpOnly: true,          // JS cannot read these – XSS safe
     secure: process.env.NODE_ENV === 'production', // HTTPS only in prod
-    sameSite: 'strict' as const
+    //sameSite: 'strict' as const
 };
 
 export function setAuthCookies(

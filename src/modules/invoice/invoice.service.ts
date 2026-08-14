@@ -7,13 +7,15 @@ import puppeteer from 'puppeteer';
 import { IssueRepository } from '@modules/issue/repositories';
 import { Types } from 'mongoose';
 import { IssueStatus } from '@common/enum/issue.status.enum';
+import { SettingsRepository } from '@modules/settings/repository/settings.repository';
 
 @Injectable()
 export class InvoiceService {
     constructor(
         private readonly invoiceRepository: InvoiceRepository,
         private readonly configService: ConfigService ,
-        private readonly issueRepo:IssueRepository
+        private readonly issueRepo:IssueRepository,
+        private readonly settingsRepo: SettingsRepository
     ) {}
 
     async create(createInvoiceDto: CreateInvoiceDto , user:Partial<UserDocument>) {
@@ -72,6 +74,7 @@ export class InvoiceService {
 
     async generatePdf(id: string): Promise<Buffer> {
         const invoice = await this.findOne(id);
+        const settings= await this.settingsRepo.getByField({isDeleted:false})
         const populatedInvoice = await invoice.populate(['issue_id', 'assigendTo']) as any;
         
         const invoiceObj = {
@@ -448,13 +451,13 @@ export class InvoiceService {
         <div class="invoice-header">
             <div class="company-logo-section">
                 <div class="company-logo">
-                    <img src ="http://127.0.0.1:1920/uploads/logo/logo.webp" alt="Display Doctor" />
+                    <img src ="${settings?.siteLogo}" alt="Display Doctor" />
                 </div>
                 <div class="company-subtitle">
                     Professional Device Repair & Maintenance Services
                 </div>
                 <div class="company-address">
-                    2/3A Christopher lane Kolkata 14
+                    ${settings?.invoiceAddress || 'Display Doctor'}
                 </div>
             </div>
             <div class="invoice-title-section">

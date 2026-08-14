@@ -114,6 +114,7 @@ export class AuthService {
             await this.refreshTokenRepository.revokeToken(body.refreshToken);
             throw new BadRequestException(Messages.USER_MISSING_ERROR);
         }
+        const userDetails = await this.userRepository.getUserDetails({_id:user?._id})
 
         // Token rotation: Issue new tokens and revoke the old one
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } = await this.generateTokenPair(
@@ -131,7 +132,8 @@ export class AuthService {
             message: Messages.REFRESH_TOKEN_ISSUED_SUCCESS,
             data: {
                 accessToken: newAccessToken,
-                refreshToken: newRefreshToken
+                refreshToken: newRefreshToken,
+                user:userDetails
             }
         };
     }
